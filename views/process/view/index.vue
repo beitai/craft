@@ -1,0 +1,371 @@
+<template>
+<div class="app-container calendar-list-container">
+  <div class="filter-container"> 
+    <template  v-if="Status!='info'">  
+      <el-select v-model="listQuery.u9Coding"  clearable filterable  remote :remote-method="selevtValue"  placeholder="U9产品编码" style="width: 200px;" class="filter-item"> 
+              <el-option
+                v-for="item in Items"
+                :key="item.u9Coding"
+                :label="item.u9Coding+'('+item.productModel+')'"
+                :value="item.u9Coding">
+              </el-option>
+      </el-select>  
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="客户" v-model="listQuery.customer"> </el-input>
+      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
+      <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column align="center" label="U9产品编码"  > <template scope="scope" >
+            <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
+            </template> </el-table-column>
+        <el-table-column  align="center" label="产品型号"> <template scope="scope">
+            <span>{{scope.row.productModel}}</span>
+          </template> </el-table-column>
+        <el-table-column  align="center" label="客户"> <template scope="scope">
+                <span>{{scope.row.customer}}</span>
+              </template> </el-table-column>
+        <el-table-column  align="center" label="版本"> <template scope="scope">
+                <span>{{scope.row.version}}</span>
+              </template> </el-table-column>
+        <el-table-column  align="center" label="文件编码"> <template scope="scope">
+                <span>{{scope.row.fileCoding}}</span>
+              </template> </el-table-column>
+        <el-table-column  align="center" label="盒号"> <template scope="scope">
+              <span>{{scope.row.boxNumber}}</span>
+            </template> </el-table-column>
+        <el-table-column  align="center" label="箱号"> <template scope="scope">
+                <span>{{scope.row.caseNumber}}</span>
+              </template> </el-table-column> 
+        <el-table-column align="center" width="120" label="操作"  fixed="right"> <template scope="scope">
+            <el-button v-if="viewManager_btn_info"  style="margin-left:10px;" size="small" type="info" @click="info(scope.row)">明细
+            </el-button>  
+        </template></el-table-column> 
+      </el-table>
+      <div v-show="!listLoading" class="pagination-container">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
+      </div>
+    </template>
+
+
+   <el-button v-if="Status=='info'" class="filter-item list"  type="primary"  @click="handleFilter">返回列表</el-button>
+   <el-tabs v-model="activeName" :model="form" v-if="Status=='info'">
+      <el-tab-pane  label="工艺信息" name="first"> 
+          <el-form   :rules="rules" ref="form" label-width="100px"  :inline="true" class="info">
+          <el-form-item  label="U9产品编号">
+            <span  v-html="form.u9Coding"></span>
+          </el-form-item>
+          <el-form-item label="产品编号">
+                <span v-html="form.productModel"></span> 
+          </el-form-item> 
+          <el-form-item  label="客户">
+                <span  class="maxspan" v-html="form.customer"></span>  
+          </el-form-item>
+          <el-form-item label="文件编号">
+                <span v-html="form.fileCoding"></span>  
+          </el-form-item>
+          <el-form-item label="版本">
+                <span v-html="form.version"></span>   
+          </el-form-item> 
+          <el-form-item label="发放日期">
+                <span v-html="form.issueDate"></span>   
+          </el-form-item> 
+          <el-form-item label="更改日期" > 
+                <span v-html="form.updateDate"></span>   
+          </el-form-item>
+          <el-form-item label="刚印"  >
+                <span v-html="form.steelSeal"></span>    
+          </el-form-item>
+          <el-form-item label="涂喷颜色">
+                <span v-html="form.sprayingColor"></span>     
+          </el-form-item>
+          <el-form-item label="移印" prop="region">
+                <span v-html="form.moveSeal"></span>      
+          </el-form-item>
+          <el-form-item label="产品POF过塑" prop="region">
+              <span v-html="form.pofPlasticProducts"></span>       
+          </el-form-item>
+          <el-form-item label="箱过塑" prop="region">
+              <span v-html="form.casePlastic"></span>        
+          </el-form-item>
+          <el-form-item label="盒过塑" prop="region">
+              <span v-html="form.boxPlastic"></span> 
+          </el-form-item>
+          <el-form-item label="盒标签1">
+              <span v-html="form.box1Label"></span>  
+          </el-form-item>
+          <el-form-item label="数量">
+              <span v-html="form.box1Num"></span>   
+          </el-form-item>
+          <el-form-item label="盒标签2">
+              <span v-html="form.box2Label"></span>    
+          </el-form-item>
+          <el-form-item label="数量">
+              <span v-html="form.box2Num"></span>    
+          </el-form-item>
+          <el-form-item label="箱标签1">
+              <span v-html="form.case1Label"></span>   
+          </el-form-item>
+          <el-form-item label="数量">
+              <span v-html="form.case1Num"></span>    
+          </el-form-item>
+          <el-form-item label="箱标签2">
+              <span v-html="form.case2Label"></span>     
+          </el-form-item>
+          <el-form-item label="数量">
+              <span v-html="form.case2Num"></span>  
+          </el-form-item>
+          <el-form-item label="说明书">
+              <span v-html="form.instructions"></span>    
+          </el-form-item>
+          <el-form-item label="合格证" >
+              <span v-html="form.qualifiedCertificate"></span>    
+          </el-form-item>
+          <el-form-item label="封口条">
+              <span v-html="form.sealingPaste"></span>
+          </el-form-item>
+          <el-form-item label="打包带" >
+              <span v-html="form.packagingTape"></span>  
+          </el-form-item>
+          <el-form-item label="数量(条)">
+              <span v-html="form.packagingTapeNumber"></span>  
+          </el-form-item>
+         <el-form-item label="封箱胶纸">
+              <span v-html="form.sealingGummedPaper"></span>   
+          </el-form-item>   
+          <el-form-item label="面料/底料">
+              <!-- <span class="maxspan" v-html="form.shellFabric+'/'+form.bedCharge"></span>   -->
+              <span class="maxspan" v-html="form.bedCharge"></span>  
+          </el-form-item>
+          <el-form-item label="盒号">
+              <span v-html="form.boxNumber"></span>   
+          </el-form-item> 
+          <el-form-item label="箱号">
+              <span v-html="form.caseNumber"></span>  
+          </el-form-item>
+          <el-form-item label="子件料号">
+              <span class="maxspan" v-html="form.childThingNumber"></span>   
+          </el-form-item> 
+          <el-form-item label="创建人">
+              <span v-html="form.crtName"></span>   
+          </el-form-item> 
+          <el-form-item label="创建时间">
+              <span v-html="form.crtTime"></span>  
+          </el-form-item>
+          <el-form-item label="最后更新人">
+              <span v-html="form.updName"></span>   
+          </el-form-item> 
+          <el-form-item label="最后更新时间">
+              <span v-html="form.updTime"></span>  
+          </el-form-item>  
+          <el-form-item label="打商标">  
+              <img :src="form.process1PictureName">
+          </el-form-item> 
+          <el-form-item label="钻小口"> 
+              <img :src="form.process2PictureName"> 
+          </el-form-item> 
+          <el-form-item label="移动喷码"> 
+              <img :src="form.process3PictureName"> 
+          </el-form-item> 
+          <el-form-item label="包装"> 
+              <img :src="form.process4PictureName">  
+          </el-form-item> 
+        </el-form> 
+      </el-tab-pane> 
+    </el-tabs>
+      
+
+   </div> 
+</div>
+</template>
+
+<script>
+import {
+  page,
+  addObj,
+  getObj,
+  delObj,
+  putObj,
+  query
+} from 'api/process/view/index';
+import { mapGetters } from 'vuex';
+export default {
+  name: 'user',
+  data() {
+    return {  
+      activeName:'first',
+      staticOptions: [{
+        value:'1',
+        label:'有效'
+      },{
+        value:'0',
+        label:'作废'
+      }],
+      Items:undefined,
+      form: {
+        username: undefined,
+        name: undefined,
+        sex: '男',
+        password: undefined,
+        description: undefined
+      },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '请输入用户',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 20,
+            message: '长度在 3 到 20 个字符',
+            trigger: 'blur'
+          }
+        ],
+        username: [
+          {
+            required: true,
+            message: '请输入账户',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 20,
+            message: '长度在 3 到 20 个字符',
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'blur'
+          },
+          {
+            min: 5,
+            max: 20,
+            message: '长度在 5 到 20 个字符',
+            trigger: 'blur'
+          }
+        ]
+      },
+      list: null,
+      total: null,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 10,
+        status: 1,
+        u9Coding:''
+      },
+      dialogFormVisible: false,
+      Status: '',
+      userManager_btn_edit: false,
+      userManager_btn_del: false,
+      userManager_btn_add: false,
+      viewManager_btn_info: false,
+      textMap: {
+        update: '编辑',
+        create: '创建'
+      },
+      tableKey: 0
+    }
+  },
+  created() {
+    this.getList();
+    // this.userManager_btn_edit = this.elements['userManager:btn_edit'];
+    // this.userManager_btn_del = this.elements['userManager:btn_del'];
+    // this.userManager_btn_add = this.elements['userManager:btn_add'];
+    this.viewManager_btn_info = this.elements['viewManager:btn_info'];
+  },
+  computed: {
+    ...mapGetters([
+      'elements'
+    ])
+  },
+  methods: {
+    getList() {
+      this.Status = 'list';
+      this.listLoading = true;
+      page(this.listQuery)
+        .then(response => {
+          console.log(response);
+          this.list = response.data.rows;
+          this.total = response.data.total;
+          this.listLoading = false;
+        })
+      query().then(response => {
+          this.Items = response.data.dataList; 
+        });
+    },
+    info(row) {
+      getObj(row.id)
+        .then(response => {
+          console.log(response);
+          this.Status = 'info';
+          this.form = response.data;
+        })
+    },
+    handleFilter() {
+      this.getList();
+    },
+    handleSizeChange(val) {
+      this.listQuery.limit = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      this.listQuery.page = val;
+      this.getList();
+    },
+    toggleSelection(rows) {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
+        }
+    },
+    handleSelectionChange(val) {
+        this.multipleSelection = val;
+    },
+    selevtValue(value){
+      if(value != ''){ 
+       query(value).then(response => {  
+          this.Items = response.data.dataList; 
+        }); 
+      }
+    }
+  }
+}
+</script>
+
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.list{
+  position: absolute;
+  right:20px;
+  z-index: 1;
+}
+.info{
+  padding-top:20px; 
+  border:1px solid;
+} 
+.info span{
+  display: inline-block;
+  width: 500px;
+  height: 38px;
+  text-align: center;  
+  border:1px solid;
+}
+.info .maxspan{
+  display: inline-block;
+  width: 1115px;
+  text-align: center; 
+}
+.info img{
+  width: 300px;
+  height: 170px;
+  margin: 0 100px;
+} 
+</style>
