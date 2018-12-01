@@ -7,14 +7,14 @@
   <tabs-view></tabs-view>
   <error-log v-if="log.length>0" class="errLog-container" :logsList="log"></error-log>
   <screenfull class='screenfull'></screenfull>
-  <span class="username">{{name}}</span>
+  <!-- <span class="username">{{name}}</span> -->
   <el-dropdown class="avatar-container" trigger="click">
     
     <div class="avatar-wrapper"> <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'"> <i class="el-icon-caret-bottom"></i> </div>
     <el-dropdown-menu class="user-dropdown" slot="dropdown">
-      <router-link class='inlineBlock' to="/">
-        <el-dropdown-item> 首页 </el-dropdown-item>
-      </router-link> 
+      <!-- <router-link class='inlineBlock' to="/"> -->
+      <el-dropdown-item> {{name}} </el-dropdown-item>
+      <!-- </router-link>  -->
       <el-dropdown-item ><span @click="handleReset" style="display:block;">修改密码 </span></el-dropdown-item>
       <el-dropdown-item divided><span @click="logout" style="display:block;">退出登录</span></el-dropdown-item>
     </el-dropdown-menu>
@@ -182,7 +182,10 @@ export default {
           return false;
         } 
       });
-    }
+    },
+    cancel() { 
+        this.dialogFormVisible = false;
+    },
   }
 }
 </script>

@@ -90,10 +90,10 @@ import {
   getObj,
   delObj,
   putObj
-} from 'api/admin/groupType/index';
-import { mapGetters } from 'vuex';
+} from "api/admin/groupType/index";
+import { mapGetters } from "vuex";
 export default {
-  name: 'groupType',
+  name: "groupType",
   data() {
     return {
       form: {
@@ -102,37 +102,43 @@ export default {
         description: undefined
       },
       rules: {
-        code: [{
-          required: true,
-          message: '请输入编码',
-          trigger: 'blur'
-        }, {
-          min: 3,
-          max: 20,
-          message: '长度在 3 到 20 个字符',
-          trigger: 'blur'
-        }],
-        name: [{
-          required: true,
-          message: '请输入类型名称',
-          trigger: 'blur'
-        }, {
-          min: 3,
-          max: 20,
-          message: '长度在 3 到 20 个字符',
-          trigger: 'blur'
-        }],
+        code: [
+          {
+            required: true,
+            message: "请输入编码",
+            trigger: "blur"
+          },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur"
+          }
+        ],
+        name: [
+          {
+            required: true,
+            message: "请输入类型名称",
+            trigger: "blur"
+          },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur"
+          }
+        ],
         description: [
-        //   {
-        //   required: true,
-        //   message: '请输入描述',
-        //   trigger: 'blur'
-        // }, {
-        //   min: 3,
-        //   max: 20,
-        //   message: '长度在 3 到 20 个字符',
-        //   trigger: 'blur'
-        // }
+          //   {
+          //   required: true,
+          //   message: '请输入描述',
+          //   trigger: 'blur'
+          // }, {
+          //   min: 3,
+          //   max: 20,
+          //   message: '长度在 3 到 20 个字符',
+          //   trigger: 'blur'
+          // }
         ]
       },
       list: null,
@@ -144,27 +150,25 @@ export default {
         name: undefined
       },
       dialogFormVisible: false,
-      dialogStatus: '',
+      dialogStatus: "",
       groupTypeManager_btn_edit: false,
       groupTypeManager_btn_del: false,
       groupTypeManager_btn_add: false,
       textMap: {
-        update: '编辑',
-        create: '创建'
+        update: "编辑",
+        create: "创建"
       },
       tableKey: 0
-    }
+    };
   },
   created() {
     this.getList();
-    this.groupTypeManager_btn_edit = this.elements['groupTypeManager:btn_edit'];
-    this.groupTypeManager_btn_del = this.elements['groupTypeManager:btn_del'];
-    this.groupTypeManager_btn_add = this.elements['groupTypeManager:btn_add'];
+    this.groupTypeManager_btn_edit = this.elements["groupTypeManager:btn_edit"];
+    this.groupTypeManager_btn_del = this.elements["groupTypeManager:btn_del"];
+    this.groupTypeManager_btn_add = this.elements["groupTypeManager:btn_add"];
   },
   computed: {
-    ...mapGetters([
-      'elements'
-    ])
+    ...mapGetters(["elements"])
   },
   methods: {
     getList() {
@@ -173,7 +177,7 @@ export default {
         this.list = response.data.rows;
         this.total = response.data.total;
         this.listLoading = false;
-      })
+      });
     },
     handleFilter() {
       this.getList();
@@ -188,27 +192,27 @@ export default {
     },
     handleCreate() {
       this.resetTemp();
-      this.dialogStatus = 'create';
+      this.dialogStatus = "create";
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
       getObj(row.id).then(response => {
         this.form = response.data;
         this.dialogFormVisible = true;
-        this.dialogStatus = 'update';
+        this.dialogStatus = "update";
       });
     },
     handleDelete(row) {
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将永久删除, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       }).then(() => {
         delObj(row.id).then(() => {
           this.$notify({
-            title: '成功',
-            message: '删除成功',
-            type: 'success',
+            title: "成功",
+            message: "删除成功",
+            type: "success",
             duration: 2000
           });
           const index = this.list.indexOf(row);
@@ -223,12 +227,12 @@ export default {
             this.dialogFormVisible = false;
             this.getList();
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
+              title: "成功",
+              message: "创建成功",
+              type: "success",
               duration: 2000
             });
-          })
+          });
         } else {
           return false;
         }
@@ -248,9 +252,9 @@ export default {
             this.dialogFormVisible = false;
             this.getList();
             this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
+              title: "成功",
+              message: "创建成功",
+              type: "success",
               duration: 2000
             });
           });
@@ -263,11 +267,11 @@ export default {
       this.form = {
         username: undefined,
         name: undefined,
-        sex: '男',
+        sex: "男",
         password: undefined,
         description: undefined
       };
     }
   }
-}
+};
 </script>

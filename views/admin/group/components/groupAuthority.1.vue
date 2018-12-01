@@ -5,26 +5,12 @@
   </el-col>
   <el-col :span="8" style='margin-top:15px;'>
     <el-input placeholder="输入关键字进行过滤" v-model="filterText"> </el-input>
-      <!--  -->
-          <el-tree class="filter-tree"
-            :data="treeData" 
-            show-checkbox 
-            highlight-current
-            ref="menuTree"
-            :node-key="getTreeNodeKey"
-            node-key="id"
-            :props="defaultProps" 
-            :filter-node-method="filterNode" 
-            @node-click="getNodeData"
-            @current-change="getNodeData1"
-            check-strictly
-          default-expand-all>
-          <!--   -->
+    <el-tree class="filter-tree" check-strictly :node-key="getTreeNodeKey" :data="treeData" show-checkbox node-key="id" highlight-current :props="defaultProps" :filter-node-method="filterNode" ref="menuTree" @node-click="getNodeData" default-expand-all>
     </el-tree>
   </el-col>
   <el-col :span="16" style='margin-top:15px;'>
-      <el-table ref="elementTable" :data="list" border fit highlight-current-row @select="handleSelectionChange" style="width: 100%">
-      <!-- <el-table :key='tableKey' :data="list" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange"> -->
+      <!-- <el-table ref="elementTable"  :key='tableKey'  :data="list" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange"> -->  
+      <el-table :key='tableKey' :data="list" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column v-if="groupManager_element" type="selection" width="55"></el-table-column>
         
         <el-table-column width="200px" align="center" label="资源编码">
@@ -90,13 +76,15 @@ export default {
       },
       groupManager_menu: false,
       groupManager_element: false,
-      tableKey:1
+      tableKey: 0
       //   currentId: -1
     }
   },
   watch: {
     filterText(val) {
-      this.$refs.menuTree.filter(val); 
+      this.$refs.menuTree.filter(val);
+      // console.log("filterText");
+      // console.log(val);
     }
   },
   created() {
@@ -104,8 +92,8 @@ export default {
     this.groupManager_menu = this.elements['groupManager:menu'];
     this.groupManager_element = this.elements['groupManager:element'];
 
-    // console.log('elements');
-    // console.log(this.elements);
+    console.log('elements');
+    console.log(this.elements);
   },
   computed: {
     ...mapGetters([
@@ -117,61 +105,46 @@ export default {
       fetchTree(this.listQuery).then(data => {
         this.treeData = data;
         this.initAuthoritys();
+        
+        // console.log('菜单列表');
+        // console.log(this.treeData);
+
       });
     },
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
-    // 根据权限读出对一的节点
     getNodeData(data) {
       this.listQuery.menuId = data.id;
       page(this.listQuery).then(response => {
         this.list = response.data.rows;
-        console.log('list');
-        console.log(this.list);
         getElementAuthority(this.groupId).then(data => {
-          console.log('用戶权限');
-          console.log(data);
           const obj = {};
           for (let i = 0; i < this.list.length; i++) {
             obj[this.list[i].id] = this.list[i];
           }
-          console.log('obj');
-          console.log(obj);
           const toggle = {};
           for (let i = 0; i < data.data.length; i++) {
             const id = data.data[i]
             if (obj[id] !== undefined && toggle[id] === undefined) {
               this.$refs.elementTable.toggleRowSelection(obj[data.data[i]]);
               toggle[id] = true;
-            } 
-            
+            }
           }
-          console.log('toggle');
-          console.log(toggle);
         });
       });
       this.currentId = data.id;
       this.showElement = true;
     },
-    
-    getNodeData1(data,data1) {
-      console.log("选中。--------  方法一");
-      console.log(data);
-      console.log(data1);
-      
-      console.log(data1.checked)
-    },
-
-    getTreeNodeKey(node) { 
+    getTreeNodeKey(node) {
       return node.id;
-    }, 
-    handleSelectionChange(val, row) {
-      // console.log('菜单选中'); 
-      // console.log(val);
-      // console.log('单个'); 
-      // console.log(row); 
+    },
+    handleSelectionChange(val,row) { 
+      console.log('菜单选中'); 
+      console.log(val);
+      console.log('单个'); 
+      console.log(row); 
       let flag = true;
       for (let i = 0; i < val.length; i++) {
         if (val[i].id === row.id) {
@@ -197,8 +170,6 @@ export default {
       for (let i = 0; i < nodes.length; i++) {
         ids.push(nodes[i].id);
       }
-      console.log('ids');
-      console.log(ids);
       modifyMenuAuthority(this.groupId, {
         menuTrees: ids.join()
       }).then(() => {
@@ -210,18 +181,12 @@ export default {
         });
       });
     },
-    // 初始化权限
     initAuthoritys() {
       getMenuAuthority(this.groupId).then(data => {
-        console.log('init');
-        console.log(data);
         const result = [];
         for (let i = 0; i < data.data.length; i++) {
           result.push(data.data[i].id);
-         }
-        // result.shift(); 
-        console.log('init');
-        console.log(result);
+        }
         this.$refs.menuTree.setCheckedKeys(result);
       });
     }

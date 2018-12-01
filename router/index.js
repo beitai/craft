@@ -72,40 +72,41 @@ export const asyncRouterMap = [{
   path: '/baseManager',
   component: Layout,
   name: '系统管理',
-  icon: 'setting',
-  alwaysShow: true, 
+  icon: 'setting', 
   authority: 'baseManager',
   children: [{
     path: 'userManager',
     icon: 'fa-user',
     component: _import('admin/user/index'),
-    name: '用户管理',
+    name: '用户管理', 
     authority: 'userManager'
   }, {
     path: 'menuManager',
     icon: 'category',
     component: _import('admin/menu/index'),
-    name: '菜单管理',
+    name: '菜单管理', 
     authority: 'menuManager'
   }, {
     path: 'groupManager',
     icon: 'group_fill',
     component: _import('admin/group/index'),
-    name: '角色权限管理',
+    name: '角色权限管理', 
     authority: 'groupManager'
-  }, {
-    path: 'groupTypeManager',
-    icon: 'fa-users',
-    component: _import('admin/groupType/index'),
-    name: '角色类型管理',
-    authority: 'groupTypeManager'
-  }, {
-    path: 'gateLogManager',
-    icon: 'viewlist',
-    component: _import('admin/gateLog/index'),
-    name: '操作日志管理',
-    authority: 'gateLogManager'
-  }]
+  }
+  // , {
+  //   path: 'groupTypeManager',
+  //   icon: 'fa-users',
+  //   component: _import('admin/groupType/index'),
+  //   name: '角色类型管理',
+  //   authority: 'groupTypeManager'
+  // }, {
+  //   path: 'gateLogManager',
+  //   icon: 'viewlist',
+  //   component: _import('admin/gateLog/index'),
+  //   name: '操作日志管理',
+  //   authority: 'gateLogManager'
+  // }
+  ]
 },
 {
   path: '/authManager',
@@ -119,52 +120,28 @@ export const asyncRouterMap = [{
     name: '用户管理',
     authority: 'serviceManager'
   }]
-},
-{
-  path: '/monitorManager',
-  component: Layout,
-  name: '监控模块管理',
-  icon: 'setting',
-  authority: 'monitorManager',
-  alwaysShow: true, 
-  children: [{
-    path: 'serviceEurekaManager',
-    component: _import('monitor/eureka/index'),
-    name: 'Eureka注册中心',
-    authority: 'serviceEurekaManager'
-  }, {
-    path: 'serviceMonitorManager',
-    component: _import('monitor/service/index'),
-    name: '服务状态监控',
-    authority: 'serviceMonitorManager'
-  }, {
-    path: 'serviceZipkinManager',
-    component: _import('monitor/zipkin/index'),
-    name: '服务状态监控',
-    authority: 'serviceZipkinManager'
-  }]
-},
+}, 
 {
   path: '/processManager',
   component: Layout,
-  // name: '工艺管理11',
-  // icon: 'setting',
-  authority: 'processManager',
-  children: [
+  // name: '工艺管理',
+   authority: 'processManager',
+   alwaysShow: true, 
+   children: [
   {
     path: 'maintainManager',
     component: _import('process/maintain/index'),
-    // name: '工艺信息维护',
-    authority: 'maintainManager'
+    // name: '工艺信息维护', 
+    authority: 'maintainManager' 
   },{
     path: 'viewManager',
     component: _import('process/view/index'),
-    // name: '工艺信息查看',
+    // name: '工艺信息查看', 
     authority: 'viewManager'
   },{
     path: 'versionManager',
     component: _import('process/version/index'),
-    // name: '历史版本查看',
+    // name: '历史版本查看', 
     authority: 'versionManager'
   } 
 ]

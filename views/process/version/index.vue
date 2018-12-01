@@ -39,7 +39,7 @@
                 <span>{{scope.row.caseNumber}}</span>
               </template> </el-table-column> 
         <el-table-column align="center" width="120"  label="操作"  fixed="right"> <template scope="scope">
-            <el-button v-if="viewManager_btn_info" size="small" type="info" style="margin-left:10px;" @click="info(scope.row)">明细
+            <el-button v-if="viewManager_btn_info"  style="margin-left:10px;" size="small" type="info" @click="info(scope.row)">明细
             </el-button>  
         </template></el-table-column> 
       </el-table>

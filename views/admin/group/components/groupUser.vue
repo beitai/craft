@@ -1,7 +1,7 @@
 <template>
 <el-form label-width="80px">
   <el-form-item label="姓名">
-    <el-select v-model="leaders" multiple filterable remote placeholder="请输入关键词" :remote-method="remoteLeaderMethod" :loading="loading">
+    <el-select v-model="leaders" multiple filterable remote placeholder="请输入关键词" :remote-method="remoteLeaderMethod" style="width:100%;" :loading="loading">
       <el-option v-for="item in lItems" :key="item.id" :label="item.name" :value="item.id"> </el-option>
     </el-select>
   </el-form-item>

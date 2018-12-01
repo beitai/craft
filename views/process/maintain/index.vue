@@ -83,8 +83,7 @@
         <el-form-item label="选择文件">
         <!-- :http-request="importFile" -->
           <el-upload
-            class="upload-demo"
-            drag
+            class="upload-demo"  drag
             action="/api/product/process/excelInport"
             :on-success	= "importSubcess">
             <i class="el-icon-upload"></i>
@@ -381,7 +380,7 @@
     </el-tabs> 
     
     <!--工艺图纸上传弹出框-->
-    <el-dialog :title="textMap[dialogStatus]"  :visible.sync="dialogFormVisible_uploat"> 
+    <el-dialog :title="textMap[dialogStatus]"  :visible.sync="dialogFormVisible_upload"> 
         <el-upload
             class="upload-demo"
             drag
@@ -539,7 +538,7 @@ export default {
       sexOptions: ['男', '女'],
       importValue:'',
       dialogFormVisible_import: false,
-      dialogFormVisible_uploat: false,
+      dialogFormVisible_upload : false,
       Status: 'list',
       dialogStatus: '',
       maintainManager_add: false,
@@ -791,6 +790,7 @@ export default {
         }
     },
     handleSelectionChange(val) {
+      console.log(val);
         this.multipleSelection = val;
         var aa = [];
         val.forEach(row => {
@@ -864,12 +864,12 @@ export default {
                     console.log(response);
               }) 
     },
+    // 输出导入结果
     importSubcess(response){ 
       var rows = response.data;
       rows.forEach(row => { 
             this.importValue += row+"\n";
-      });
-      // console.log(this.importValue);
+      }); 
     },
     // 历史记录操作 后的返回,清空参数
     getListPage(){

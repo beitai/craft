@@ -113,6 +113,9 @@ export default {
     this.groupManager_btn_add = this.elements['groupManager:btn_add'];
     this.groupManager_btn_userManager = this.elements['groupManager:btn_userManager'];
     this.groupManager_btn_resourceManager = this.elements['groupManager:btn_resourceManager'];
+
+    // console.log('vuex');
+    // console.log(this.elements);
   },
   computed: {
     ...mapGetters([
@@ -123,18 +126,22 @@ export default {
     getList() {
       fetchTree(this.listQuery).then(data => {
         this.treeData = data;
+        console.log(this.treeData);
       });
     },
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
+    // 获取节点数据
     getNodeData(data) {
       if (!this.formEdit) {
         this.formStatus = 'update';
       }
+      console.log(data.id);
       getObj(data.id).then(response => {
         this.form = response.data;
+        console.log(this.form);
       });
       this.currentId = data.id;
     },
@@ -180,6 +187,7 @@ export default {
       });
     },
     create() {
+      console.log(this.form);
       addObj(this.form).then(() => {
         this.getList();
         this.$notify({
@@ -204,6 +212,8 @@ export default {
       };
     },
     handlerUser() {
+      console.log(this.currentId);
+      console.log("用户授权测试");
       this.dialogUserVisible = true;
       if (this.$refs.groupUser !== undefined) {
         this.$refs.groupUser.groupId = this.currentId;
