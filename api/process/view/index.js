@@ -15,32 +15,10 @@ export function query(query) {
   });
 }
 
-export function addObj(obj) {
-  return fetch({
-    url: '/pro/process/maxVersion',
-    method: 'post',
-    data: obj
-  });
-}
 // 明细
 export function getObj(id) {
   return fetch({
     url: ' /api/product/process/getProcess/'+id,
     method: 'get'
-  })
-}
-
-export function delObj(id) {
-  return fetch({
-    url: '/pro/process/maxVersion/' + id,
-    method: 'delete'
-  })
-}
-
-export function putObj(id, obj) {
-  return fetch({
-    url: '/pro/process/maxVersion/' + id,
-    method: 'put',
-    data: obj
   })
 }

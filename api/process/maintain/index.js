@@ -38,6 +38,13 @@ export function delObj(obj) {
   })
 }
 
+export function deleteObj(id) {
+  return fetch({
+    url: '/api/product/process/' + id,
+    method: 'delete'
+  })
+}
+
 export function putObj(id, obj) {
   return fetch({
     url: '/api/product/process/update/'+ id,

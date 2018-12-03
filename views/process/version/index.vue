@@ -188,7 +188,7 @@ import {
   delObj,
   putObj,
   query
-} from 'api/process/view/index';
+} from 'api/process/version/index';
 import { mapGetters } from 'vuex';
 export default {
   name: 'user',
@@ -288,6 +288,9 @@ export default {
     getList() {
       this.Status = 'list';
       this.listLoading = true;
+      if(this.listQuery.version == ''){
+        this.listQuery.version = undefined;
+      }
       page(this.listQuery)
         .then(response => {
           console.log(response);
@@ -295,9 +298,6 @@ export default {
           this.total = response.data.total;
           this.listLoading = false;
         })
-      query().then(response => {
-          this.Items = response.data.dataList; 
-        });
     },
     info(row) {
       getObj(row.id)

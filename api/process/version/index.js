@@ -2,24 +2,9 @@ import fetch from 'utils/fetch';
 
 export function page(query) {
   return fetch({
-    url: '/api/product/process/page',
+    url: '/api/product/process/historyProcess/page',
     method: 'get',
     params: query
-  });
-}
-
-export function query(query) {
-  return fetch({
-    url: '/api/product/process/u9Conding/'+query,
-    method: 'get', 
-  });
-}
-
-export function addObj(obj) {
-  return fetch({
-    url: '/pro/process/maxVersion',
-    method: 'post',
-    data: obj
   });
 }
 
@@ -30,17 +15,9 @@ export function getObj(id) {
   })
 }
 
-export function delObj(id) {
+export function query(query) {
   return fetch({
-    url: '/pro/process/maxVersion/' + id,
-    method: 'delete'
-  })
-}
-
-export function putObj(id, obj) {
-  return fetch({
-    url: '/pro/process/maxVersion/' + id,
-    method: 'put',
-    data: obj
-  })
+    url: '/api/product/process/u9Conding/'+query,
+    method: 'get', 
+  });
 }

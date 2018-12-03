@@ -62,6 +62,8 @@
               </el-button>
               <el-button v-if="maintainManager_del && scope.row.status==0" size="small" type="warning" @click="handleDelete(scope.row)">启用
               </el-button>
+              <!-- <el-button v-if="maintainManager_del" size="small" type="danger" @click="handleDelete1(scope.row)">删除
+              </el-button> -->
               <el-button v-if="maintainManager_resotre && Status!='version'" size="small" type="info"  @click="restore(scope.row)">恢复版本
               </el-button>
               <el-button v-if="maintainManager_info" size="small" type="info"   @click="info(scope.row)">明细
@@ -77,8 +79,7 @@
     </div>
 
     <!-- 导入弹出框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible_import">  
-      
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible_import">   
         <el-form ref="form"  label-width="100px">
         <el-form-item label="选择文件">
         <!-- :http-request="importFile" -->
@@ -87,7 +88,7 @@
             action="/api/product/process/excelInport"
             :on-success	= "importSubcess">
             <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击导入</em></div>
             <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
           </el-upload>  
         </el-form-item>
@@ -381,11 +382,11 @@
     
     <!--工艺图纸上传弹出框-->
     <el-dialog :title="textMap[dialogStatus]"  :visible.sync="dialogFormVisible_upload"> 
+            <!-- :http-request="uploadFile" -->
         <el-upload
-            class="upload-demo"
-            drag
+            class="upload-demo" drag
             action="/api/product/process/ftpUploadImg"
-            :http-request="uploadFile"
+            :on-success	= "uploadSubcess"
             ref="upload">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -401,6 +402,7 @@ import {
   addObj,
   getObj,
   delObj,
+  deleteObj,
   putObj,
   query,
   restore,
@@ -634,12 +636,34 @@ export default {
             this.form = response.data; 
       });    
     },
-    // 上传
+    // 上传按钮事件
     handupload(row){  
        this.Status = 'upload';
        info(row.id).then(response => {
             this.form = response.data; 
        }); 
+    },
+    // 删除。 
+    handleDelete1(row) {
+      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          deleteObj(row.id)
+            .then(() => {
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              });
+              // const index = this.list.indexOf(row);
+              // this.list.splice(index, 1);
+              this.handleFilter();
+            });
+        });
     },
     // 作废
     handleDelete(row) { 
@@ -764,16 +788,21 @@ export default {
     }, 
     // 图片上传的弹出框
     upload(){ 
-      this.Status = 'upload';
+      this.dialogStatus = 'upload';
       this.dialogFormVisible_upload = true;
     },
-    // 上传的方法，自调接口
-    uploadFile(file){ 
-        uploadObj(file.file)
-                  .then(response =>{
-                    console.log("成功");
-                    console.log(response);
-              })
+    // 上传自定义的方法
+    // uploadFile(file){ 
+    //     uploadObj(file.file)
+    //               .then(response =>{
+    //                 console.log("成功");
+    //                 console.log(response);
+    //           })
+    // },
+    // 输出上传结果
+    uploadSubcess(response){ 
+      console.log('输出----------');
+      console.log(response); 
     },
     cancel(formName) {
       this.dialogFormVisible_import = false;
@@ -790,7 +819,6 @@ export default {
         }
     },
     handleSelectionChange(val) {
-      console.log(val);
         this.multipleSelection = val;
         var aa = [];
         val.forEach(row => {
@@ -855,15 +883,15 @@ export default {
       this.dialogStatus = 'import';
       this.dialogFormVisible_import = true;
     }, 
-    // 导入的方法
-    importFile(file){   
-      console.log(file.file);
-        importObj(file.file)
-                  .then(response =>{
-                    console.log("成功");
-                    console.log(response);
-              }) 
-    },
+    // 导入自定义的方法
+    // importFile(file){   
+    //   console.log(file.file);
+    //     importObj(file.file)
+    //               .then(response =>{
+    //                 console.log("成功");
+    //                 console.log(response);
+    //           }) 
+    // },
     // 输出导入结果
     importSubcess(response){ 
       var rows = response.data;
