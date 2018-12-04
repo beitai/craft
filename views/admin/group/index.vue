@@ -3,7 +3,7 @@
   <div class="filter-container">
     <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="姓名或账户" v-model="listQuery.name"> </el-input>
     <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-    <el-button class="filter-item" v-if="groupManager_btn_add" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+    <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
   </div>
  <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
     <el-table-column  align="center" label="角色名称"> <template scope="scope">
@@ -16,13 +16,13 @@
             <span>{{scope.row.crtTime}}</span>
           </template> </el-table-column>
     <el-table-column align="center" label="操作" width="350"  fixed="right"><template scope="scope">
-      <el-button v-if="groupManager_btn_edit" size="small" type="success" @click="handleUpdate(scope.row)">编辑
+      <el-button  size="small" type="success" @click="handleUpdate(scope.row)">编辑
       </el-button>
-      <el-button v-if="groupManager_btn_userManager" size="small" type="info"  @click="handlerUser(scope.row)">关联用户
+      <el-button  size="small" type="info"  @click="handlerUser(scope.row)">关联用户
       </el-button>
-      <el-button v-if="groupManager_btn_resourceManager" size="small" type="info" @click="handlerAuthority(scope.row)">分配权限
+      <el-button  size="small" type="info" @click="handlerAuthority(scope.row)">分配权限
       </el-button> 
-      <el-button v-if="groupManager_btn_del" size="small" type="danger" @click="handleDelete(scope.row)">删除
+      <el-button  size="small" type="danger" @click="handleDelete(scope.row)">删除
       </el-button>
     </template>
     </el-table-column>
@@ -107,12 +107,7 @@ export default {
         name: undefined
       },
       dialogFormVisible: false,
-      dialogStatus: "",
-      groupManager_btn_edit: false,
-      groupManager_btn_del: false,
-      groupManager_btn_add: false,
-      groupManager_btn_userManager: false,
-      groupManager_btn_resourceManager: false,
+      dialogStatus: "", 
       textMap: {
         update: "编辑",
         create: "创建"
@@ -121,12 +116,7 @@ export default {
     };
   },
   created() {
-    this.getList();
-    this.groupManager_btn_edit = this.elements["groupManager:btn_edit"];
-    this.groupManager_btn_del = this.elements["groupManager:btn_del"];
-    this.groupManager_btn_add = this.elements["groupManager:btn_add"];
-    this.groupManager_btn_userManager = this.elements["groupManager:btn_del"];
-    this.groupManager_btn_resourceManager = this.elements["groupManager:btn_add"];
+    this.getList(); 
   },
   computed: {
     ...mapGetters(["elements"])
@@ -268,3 +258,5 @@ export default {
   }
 };
 </script>
+
+

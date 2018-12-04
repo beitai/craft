@@ -2,9 +2,9 @@
 <div class="app-container calendar-list-container">
   <div class="filter-container">
      <el-button-group>
-    <el-button type="primary" v-if="menuManager_btn_add" icon="plus" @click="handlerAdd">添加</el-button>
-    <el-button type="primary" v-if="menuManager_btn_edit" icon="edit" @click="handlerEdit">编辑</el-button>
-    <el-button type="primary" v-if="menuManager_btn_del" icon="delete" @click="handleDelete">删除</el-button>
+    <el-button type="primary"  icon="plus" @click="handlerAdd">添加</el-button>
+    <el-button type="primary"  icon="edit" @click="handlerEdit">编辑</el-button>
+    <el-button type="primary"  icon="delete" @click="handleDelete">删除</el-button>
   </el-button-group>
   </div>
 
@@ -45,12 +45,12 @@
       </el-form-item> -->
   <!--<el-form-item label="资源路径" prop="href">
           <el-input v-model="form.href" :disabled="formEdit" placeholder="请输入资源路径"></el-input>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="类型" prop="type">
          <el-select class="filter-item" v-model="form.type"  :disabled="formEdit"  placeholder="请输入资源请求类型">
           <el-option v-for="item in  typeOptions" :key="item" :label="item" :value="item"> </el-option>
         </el-select>
-      </el-form-item> -->
+      </el-form-item> 
       <el-form-item label="排序" prop="orderNum">
           <el-input v-model="form.orderNum" :disabled="formEdit" placeholder="请输入排序"></el-input>
       </el-form-item>
@@ -70,10 +70,10 @@
       </el-form-item>
     </el-form>
      </el-card>
-    <el-card class="box-card">
+    <!-- <el-card class="box-card">
         <span>按钮或资源</span>
       <menu-element :menuId='currentId' ref="menuElement"></menu-element>
-    </el-card>
+    </el-card> -->
   </el-col>
 </el-row>
   </div>
@@ -98,7 +98,7 @@ export default {
       formAdd: true,
       formStatus: '',
       showElement: false,
-      typeOptions: ['menu', 'dirt'],
+      typeOptions: ['menu', 'button'],
       listQuery: {
         name: undefined
       },
@@ -122,9 +122,6 @@ export default {
         attr1: undefined
       },
       currentId: -1,
-      menuManager_btn_add: false,
-      menuManager_btn_edit: false,
-      menuManager_btn_del: false
     }
   },
   watch: {
@@ -134,9 +131,6 @@ export default {
   },
   created() {
     this.getList();
-    this.menuManager_btn_add = this.elements['menuManager:btn_add'];
-    this.menuManager_btn_del = this.elements['menuManager:btn_del'];
-    this.menuManager_btn_edit = this.elements['menuManager:btn_edit'];
   },
   computed: {
     ...mapGetters([

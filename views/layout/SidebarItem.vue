@@ -7,8 +7,7 @@
 				<icon-svg v-if='item.icon' :icon-class="item.icon"></icon-svg>
 				<span slot="title">{{item.children[0].title}}</span>
 			</el-menu-item>
-		</router-link> -->
-		<!-- {{item}} -->
+		</router-link> --> 
 		<el-submenu :index="item.title">
 			<template slot="title">
 				<icon-svg v-if='item.icon' :icon-class="item.icon"></icon-svg>

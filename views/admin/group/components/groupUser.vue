@@ -1,7 +1,7 @@
 <template>
 <el-form label-width="80px">
   <el-form-item label="姓名">
-    <el-select v-model="leaders" multiple filterable remote placeholder="请输入关键词" :remote-method="remoteLeaderMethod" style="width:100%;" :loading="loading">
+    <el-select v-model="leaders" style="width:100%;" multiple filterable remote placeholder="请输入关键词" :remote-method="remoteLeaderMethod"  :loading="loading">
       <el-option v-for="item in lItems" :key="item.id" :label="item.name" :value="item.id"> </el-option>
     </el-select>
   </el-form-item>
@@ -114,3 +114,18 @@ export default {
   }
 }
 </script>
+
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+  // .el-button{
+  //   min-width: 200px;
+  // }
+  // .el-select{
+  //   .el-input__inner{
+  //     height:100px!important;
+  //   }
+  // }
+  // input{
+  //     height:100px!important;
+  // }
+</style>

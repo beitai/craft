@@ -37,7 +37,7 @@
                 <span>{{scope.row.caseNumber}}</span>
               </template> </el-table-column> 
         <el-table-column align="center" width="120" label="操作"  fixed="right"> <template scope="scope">
-            <el-button v-if="viewManager_btn_info"  style="margin-left:10px;" size="small" type="info" @click="info(scope.row)">明细
+            <el-button style="margin-left:10px;" size="small" type="info" @click="info(scope.row)">明细
             </el-button>  
         </template></el-table-column> 
       </el-table>
@@ -173,7 +173,6 @@
       </el-tab-pane> 
     </el-tabs>
       
-
    </div> 
 </div>
 </template>
@@ -259,11 +258,7 @@ export default {
         u9Coding:''
       },
       dialogFormVisible: false,
-      Status: '',
-      userManager_btn_edit: false,
-      userManager_btn_del: false,
-      userManager_btn_add: false,
-      viewManager_btn_info: false,
+      Status: '', 
       textMap: {
         update: '编辑',
         create: '创建'
@@ -272,11 +267,7 @@ export default {
     }
   },
   created() {
-    this.getList();
-    // this.userManager_btn_edit = this.elements['userManager:btn_edit'];
-    // this.userManager_btn_del = this.elements['userManager:btn_del'];
-    // this.userManager_btn_add = this.elements['userManager:btn_add'];
-    this.viewManager_btn_info = this.elements['viewManager:btn_info'];
+    this.getList(); 
   },
   computed: {
     ...mapGetters([

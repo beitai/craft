@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="资源名称" v-model="listQuery.name"> </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item" v-if="menuManager_btn_element_add" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <el-button class="filter-item"  style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
     </div>
     <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="id" width="65">
@@ -48,10 +48,10 @@
 
 </el-table-column>
     <el-table-column fixed="right" align="center" label="操作" width="150"><template scope="scope">
-  <el-button v-if="menuManager_btn_element_edit" size="small" type="success" @click="handleUpdate(scope.row)">
+  <el-button  size="small" type="success" @click="handleUpdate(scope.row)">
     编辑
   </el-button>
-  <el-button v-if="menuManager_btn_element_del" size="small" type="danger" @click="handleDelete(scope.row)">删除
+  <el-button  size="small" type="danger" @click="handleDelete(scope.row)">删除
   </el-button>
 </template>
 
@@ -199,9 +199,6 @@ export default {
       },
       dialogFormVisible: false,
       dialogStatus: '',
-      menuManager_btn_element_add: false,
-      menuManager_btn_element_edit: false,
-      menuManager_btn_element_del: false,
       menuId: -1,
       textMap: {
         update: '编辑',
@@ -212,9 +209,6 @@ export default {
   },
   created() {
     this.getList();
-    this.menuManager_btn_element_add = this.elements['menuManager:btn_element_add'];
-    this.menuManager_btn_element_del = this.elements['menuManager:btn_element_del'];
-    this.menuManager_btn_element_edit = this.elements['menuManager:btn_element_edit'];
   },
   computed: {
     ...mapGetters([

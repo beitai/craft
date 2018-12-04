@@ -19,11 +19,11 @@
             <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
         </div>
         <div class="filter-container">     
-            <el-button class="filter-item"  v-if="maintainManager_add"  style="margin-left: 10px;"  @click="handleCreate"   type="primary" icon="plus">新增</el-button>
-            <el-button class="filter-item"  v-if="maintainManager_batchdel"  style="margin-left: 10px;"  type="primary" icon="minus" @click="batchDelete">批量作废</el-button>
-            <el-button class="filter-item"  v-if="maintainManager_import"  style="margin-left: 10px;"  type="primary"  @click="handleImport" >导入Excel</el-button>
-            <el-button class="filter-item"  v-if="maintainManager_download"  style="margin-left: 10px;"  type="primary" @click="download">Excel模板下载</el-button>
-            <el-button class="filter-item"  v-if="Status =='version'"  style="margin-left: 10px;float:right;" @click="getListPage()" type="primary" >返回列表</el-button>
+            <el-button class="filter-item"    style="margin-left: 10px;"  @click="handleCreate"   type="primary" icon="plus">新增</el-button>
+            <el-button class="filter-item"    style="margin-left: 10px;"  type="primary" icon="minus" @click="batchDelete">批量作废</el-button>
+            <el-button class="filter-item"    style="margin-left: 10px;"  type="primary"  @click="handleImport" >导入Excel</el-button>
+            <el-button class="filter-item"    style="margin-left: 10px;"  type="primary" @click="download">Excel模板下载</el-button>
+            <el-button class="filter-item"    style="margin-left: 10px;float:right;" @click="getListPage()" type="primary" >返回列表</el-button>
         </div> 
       <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" >
@@ -54,21 +54,21 @@
                   <span>{{scope.row.caseNumber}}</span>
                 </template> </el-table-column>
           <el-table-column align="center" label="操作" width="420"  fixed="right"> <template scope="scope" >
-              <el-button v-if="maintainManager_upload && Status!='version'" size="small" type="info" @click="handupload(scope.row)">上传
+              <el-button v-if=" Status!='version'" size="small" type="info" @click="handupload(scope.row)">上传
               </el-button> 
-              <el-button v-if="maintainManager_edit && Status!='version'" size="small" type="success" @click="handleUpdate(scope.row)">编辑
+              <el-button v-if=" Status!='version'" size="small" type="success" @click="handleUpdate(scope.row)">编辑
               </el-button>
-              <el-button v-if="maintainManager_del && scope.row.status==1" size="small" type="warning" @click="handleDelete(scope.row)">作废
+              <el-button v-if=" scope.row.status==1" size="small" type="warning" @click="handleDelete(scope.row)">作废
               </el-button>
-              <el-button v-if="maintainManager_del && scope.row.status==0" size="small" type="warning" @click="handleDelete(scope.row)">启用
+              <el-button v-if=" scope.row.status==0" size="small" type="warning" @click="handleDelete(scope.row)">启用
               </el-button>
-              <!-- <el-button v-if="maintainManager_del" size="small" type="danger" @click="handleDelete1(scope.row)">删除
+              <!-- <el-button size="small" type="danger" @click="handleDelete1(scope.row)">删除
               </el-button> -->
-              <el-button v-if="maintainManager_resotre && Status!='version'" size="small" type="info"  @click="restore(scope.row)">恢复版本
+              <el-button v-if=" Status!='version'" size="small" type="info"  @click="restore(scope.row)">恢复版本
               </el-button>
-              <el-button v-if="maintainManager_info" size="small" type="info"   @click="info(scope.row)">明细
+              <el-button size="small" type="info"   @click="info(scope.row)">明细
               </el-button>
-              <el-button v-if="maintainManager_version && Status!='version'" size="small" type="info"  @click="queryVersion(scope.row)" >历史版本
+              <el-button v-if="Status!='version'" size="small" type="info"  @click="queryVersion(scope.row)" >历史版本
               </el-button>
               
             </template> </el-table-column>
@@ -381,8 +381,7 @@
     </el-tabs> 
     
     <!--工艺图纸上传弹出框-->
-    <el-dialog :title="textMap[dialogStatus]"  :visible.sync="dialogFormVisible_upload"> 
-            <!-- :http-request="uploadFile" -->
+    <el-dialog :title="textMap[dialogStatus]"  :visible.sync="dialogFormVisible_upload">  
         <el-upload
             class="upload-demo" drag
             action="/api/product/process/ftpUploadImg"
@@ -542,17 +541,7 @@ export default {
       dialogFormVisible_import: false,
       dialogFormVisible_upload : false,
       Status: 'list',
-      dialogStatus: '',
-      maintainManager_add: false,
-      maintainManager_edit: false,
-      maintainManager_del: false,
-      maintainManager_batchdel:false,
-      maintainManager_import: false,
-      maintainManager_download: false,
-      maintainManager_upload: false,
-      maintainManager_resotre: false,
-      maintainManager_info: false,
-      maintainManager_version: false,
+      dialogStatus: '', 
       // maintainManager_uploadView: false,
       textMap: {
         update: "编辑工艺品",
@@ -567,17 +556,6 @@ export default {
   created() {
     this.getList(); 
     this.getListPage();
-    this.maintainManager_edit = this.elements['maintainManager:btn_edit'];
-    this.maintainManager_add = this.elements['maintainManager:btn_add'];
-    this.maintainManager_del = this.elements['maintainManager:btn_del'];
-
-    this.maintainManager_batchdel = this.elements['maintainManager:btn_batchdel'];
-    this.maintainManager_import = this.elements['maintainManager:btn_import'];
-    this.maintainManager_download = this.elements['maintainManager:btn_download'];
-    this.maintainManager_upload  = this.elements['maintainManager:btn_upload'];
-    this.maintainManager_resotre  = this.elements['maintainManager:btn_resotre'];
-    this.maintainManager_info  = this.elements['maintainManager:btn_info'];
-    this.maintainManager_version  = this.elements['maintainManager:btn_version'];
     // this.maintainManager_uploadView  = this.elements['maintainManager:btn_uploadView'];
     
   },
@@ -598,9 +576,6 @@ export default {
           this.total = response.data.total;
           this.listLoading = false;  
         });
-      // query().then(response => {
-      //     this.Items = response.data.dataList; 
-      // });
     },
     handleFilter() {
       this.getList();
@@ -693,8 +668,8 @@ export default {
                 type: 'success',
                 duration: 2000
               });
-              this.del.list = [];
               this.getListPage();
+              this.del.list = [];
               // console.log('重新清空'); 
               // const index = this.list.indexOf(row);
               // this.list.splice(index, 1);
@@ -790,15 +765,7 @@ export default {
     upload(){ 
       this.dialogStatus = 'upload';
       this.dialogFormVisible_upload = true;
-    },
-    // 上传自定义的方法
-    // uploadFile(file){ 
-    //     uploadObj(file.file)
-    //               .then(response =>{
-    //                 console.log("成功");
-    //                 console.log(response);
-    //           })
-    // },
+    }, 
     // 输出上传结果
     uploadSubcess(response){ 
       console.log('输出----------');
@@ -865,8 +832,7 @@ export default {
     },
     // 下载模板
     download(){
-         downloadObj().then(response =>{
-              // console.log('模板下载成功');  
+         downloadObj().then(response =>{ 
             window.location.href = "/api/product/process/ftpDownload";
               this.$notify({
                 title: '成功',
@@ -894,6 +860,7 @@ export default {
     // },
     // 输出导入结果
     importSubcess(response){ 
+      console.log(response);
       var rows = response.data;
       rows.forEach(row => { 
             this.importValue += row+"\n";
@@ -902,7 +869,7 @@ export default {
     // 历史记录操作 后的返回,清空参数
     getListPage(){
       this.Status = "list";
-      // 去掉历史版本视图和参数
+      // 去掉历史版本视图 和 参数
       this.dialogStatus = undefined; 
       this.listQuery.u9Coding = null;
       // 清空this.form 
@@ -914,6 +881,7 @@ export default {
           this.listLoading = false;  
         });
     },
+    //  u9coding的模糊查询
     selevtValue(value){   
       if(value != ''){ 
         query(value).then(response => {  
