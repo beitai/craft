@@ -10,7 +10,7 @@
   <!-- <span class="username">{{name}}</span> -->
   <el-dropdown class="avatar-container" trigger="click">
     
-    <div class="avatar-wrapper"> <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'"> <i class="el-icon-caret-bottom"></i> </div>
+    <div class="avatar-wrapper"> <img class="user-avatar" src="http://www.zhglory.com/images/logo.png"> <i class="el-icon-caret-bottom"></i> </div>
     <el-dropdown-menu class="user-dropdown" slot="dropdown">
       <!-- <router-link class='inlineBlock' to="/"> -->
       <el-dropdown-item> {{name}} </el-dropdown-item>
@@ -208,7 +208,7 @@ export default {
     }
     .screenfull {
         position: absolute;
-        right: 90px;
+        right: 160px;
         // right: 150px; 
         top: 16px;
         color: red;
@@ -228,7 +228,7 @@ export default {
             margin-top: 5px;
             position: relative;
             .user-avatar {
-                width: 40px;
+                width: 120px;
                 height: 40px;
                 border-radius: 10px;
             }

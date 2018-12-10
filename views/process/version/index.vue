@@ -15,31 +15,31 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="版本" v-model="listQuery.version"> </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55">
+        <el-table-column type="selection" min-width="5%">
         </el-table-column>
-        <el-table-column align="center" label="U9产品编码"  > <template scope="scope" >
+        <el-table-column align="center" label="U9产品编码" min-width="10%"> <template scope="scope" >
             <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
             </template> </el-table-column>
-        <el-table-column  align="center" label="产品型号"> <template scope="scope">
+        <el-table-column  align="center" label="产品型号" min-width="10%"> <template scope="scope">
             <span>{{scope.row.productModel}}</span>
           </template> </el-table-column>
-        <el-table-column  align="center" label="客户"> <template scope="scope">
+        <el-table-column  align="center" label="客户" min-width="10%"> <template scope="scope">
                 <span>{{scope.row.customer}}</span>
               </template> </el-table-column>
-        <el-table-column  align="center" label="版本"> <template scope="scope">
+        <el-table-column  align="center" label="版本" min-width="10%"> <template scope="scope">
                 <span>{{scope.row.version}}</span>
               </template> </el-table-column>
-        <el-table-column  align="center" label="文件编码"> <template scope="scope">
+        <el-table-column  align="center" label="文件编码" min-width="15%"> <template scope="scope">
                 <span>{{scope.row.fileCoding}}</span>
               </template> </el-table-column>
-        <el-table-column  align="center" label="盒号"> <template scope="scope">
+        <el-table-column  align="center" label="盒号" min-width="10%"> <template scope="scope">
               <span>{{scope.row.boxNumber}}</span>
             </template> </el-table-column>
-        <el-table-column  align="center" label="箱号"> <template scope="scope">
+        <el-table-column  align="center" label="箱号" min-width="10%"> <template scope="scope">
                 <span>{{scope.row.caseNumber}}</span>
               </template> </el-table-column> 
-        <el-table-column align="center" width="120"  label="操作"  fixed="right"> <template scope="scope">
-            <el-button   style="margin-left:10px;" size="small" type="info" @click="info(scope.row)">明细
+        <el-table-column align="center"  label="操作"  min-width="15%"> <template scope="scope">
+            <el-button size="small" type="info" @click="info(scope.row)">明细
             </el-button>  
         </template></el-table-column> 
       </el-table>
@@ -59,7 +59,7 @@
           <el-form-item label="产品编号">
                 <span v-html="form.productModel"></span> 
           </el-form-item> 
-          <el-form-item  label="客户">
+          <el-form-item  label="客户" class="max_list">
                 <span  class="maxspan" v-html="form.customer"></span>  
           </el-form-item>
           <el-form-item label="文件编号">
@@ -134,7 +134,7 @@
          <el-form-item label="封箱胶纸">
               <span v-html="form.sealingGummedPaper"></span>   
           </el-form-item>   
-          <el-form-item label="面料/底料">
+          <el-form-item label="面料/底料" class="max_list">
               <!-- <span class="maxspan" v-html="form.shellFabric+'/'+form.bedCharge"></span>   -->
               <span class="maxspan" v-html="form.bedCharge"></span>  
           </el-form-item>
@@ -144,7 +144,7 @@
           <el-form-item label="箱号">
               <span v-html="form.caseNumber"></span>  
           </el-form-item>
-          <el-form-item label="子件料号">
+          <el-form-item label="子件料号" class="max_list">
               <span class="maxspan" v-html="form.childThingNumber"></span>   
           </el-form-item> 
           <el-form-item label="创建人">
@@ -160,16 +160,16 @@
               <span v-html="form.updTime"></span>  
           </el-form-item>  
           <el-form-item label="打商标">  
-              <img :src="form.process1PictureName">
+              <img :src="form.process1PictureName_src">
           </el-form-item> 
           <el-form-item label="钻小口"> 
-              <img :src="form.process2PictureName"> 
+              <img :src="form.process2PictureName_src"> 
           </el-form-item> 
           <el-form-item label="移动喷码"> 
-              <img :src="form.process3PictureName"> 
+              <img :src="form.process3PictureName_src"> 
           </el-form-item> 
           <el-form-item label="包装"> 
-              <img :src="form.process4PictureName">  
+              <img :src="form.process4PictureName_src">  
           </el-form-item> 
         </el-form> 
       </el-tab-pane> 
@@ -285,18 +285,23 @@ export default {
       }
       page(this.listQuery)
         .then(response => {
-          console.log(response);
+          // console.log(response);
           this.list = response.data.rows;
           this.total = response.data.total;
           this.listLoading = false;
         })
     },
     info(row) {
+      this.Status = 'info';
       getObj(row.id)
         .then(response => {
-          console.log(response);
-          this.Status = 'info';
+          // console.log(response);
           this.form = response.data;
+
+          this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version; 
+          this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version; 
+          this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version; 
+          this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version;
         })
     },
     handleFilter() {
@@ -335,25 +340,33 @@ export default {
 
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.el-tabs{
+    .el-form-item{
+      width:45%;
+    }
+    .max_list{
+      // width: 92%;
+      width: 97%;
+    }  
+}
 .list{
   position: absolute;
   right:20px;
   z-index: 1;
 }
 .info{
-  padding-top:20px; 
-  border:1px solid;
+  padding-top:20px;  
 } 
 .info span{
   display: inline-block;
-  width: 500px;
+  width: 400px;
   height: 38px;
   text-align: center;  
   border:1px solid;
 }
 .info .maxspan{
   display: inline-block;
-  width: 1115px;
+  width: 985px;
   text-align: center; 
 }
 .info img{

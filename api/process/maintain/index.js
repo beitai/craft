@@ -99,6 +99,15 @@ export function uploadObj(Obj) {
     data: Obj
   })
 }
+// 删除上传图片
+
+export function deluploadObj(id) {
+  return fetch({
+    url: ' /api/product/process/photo/'+ id,
+    method: 'delete', 
+  })
+}
+
 // 版本历史
 export function getVersion(query) {
   return fetch({

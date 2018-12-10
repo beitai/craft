@@ -52,19 +52,39 @@ export function putObj(id, obj) {
     data: obj
   });
 }
-// 获得用户
-export function getUsers(id) {
+
+// 获取所有用户
+export function getAllUsers() {
   return fetch({
-    url: '/api/admin/group/' + id + '/user',
-    method: 'get'
+    url: '/api/admin/user/query',
+    method: 'get' 
   });
 }
-// 修改用户
-export function modifyUsers(id, data) {
+
+// 获得初始化用户授权
+export function getUsers(id, data) {
+  return fetch({
+    url: '/api/admin/group/' + id + '/user',
+    method: 'get',
+    params: data
+  });
+}
+
+// 修改用户 -- 添加？
+export function modifyUsers(id,data) {
+  return fetch({
+    url: '/api/admin/group/' + id + '/user',
+    method: 'post',
+    params:data
+  });
+}
+
+//  删除用户分配权限
+export function delUsers(id, data) {
   return fetch({
     url: '/api/admin/group/' + id + '/user',
     method: 'put',
-    params: data
+    data: data
   });
 }
 
@@ -76,6 +96,7 @@ export function removeElementAuthority(id, data) {
     params: data
   });
 }
+
 //  添加用户权限  按钮
 export function addElementAuthority(id, data) {
   return fetch({
@@ -85,10 +106,11 @@ export function addElementAuthority(id, data) {
   });
 }
 //  获得用户权限
-export function getElementAuthority(id) {
+export function getElementAuthority(id,data) {
   return fetch({
     url: '/api/admin/group/' + id + '/authority/element',
-    method: 'get'
+    method: 'get',
+    params: data
   });
 }
 

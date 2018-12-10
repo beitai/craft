@@ -102,8 +102,8 @@ const user = {
     }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
-          console.log('用户测试');
-          console.log(response);
+          // console.log('用户测试');
+          // console.log(response);
           const data = response;
           commit('SET_ROLES', 'admin');
           commit('SET_NAME', data.name);
@@ -113,19 +113,20 @@ const user = {
           const menus = {};
           const elements = {};
           for (let i = 0; i < data.menus.length; i++) {
-            // if(menus[data.menus[i].type]=='button'){
-            //   elements[data.menus[i].code] = true;  
-            // }else{
-            //   menus[data.menus[i].code] = true;
-            // }
+            // menus[data.menus[i].code] = true; 
+            if(data.menus[i].type == "button"){ 
+              elements[data.menus[i].code] = true; 
+            }else{
+              menus[data.menus[i].code] = true;  
+            }
           }
           commit('SET_MENUS', menus);
           // for (let i = 0; i < data.elements.length; i++) {
           //   elements[data.elements[i].code] = true;
           // }
           commit('SET_ELEMENTS', elements);
-          console.log(menus);
-          console.log(elements);
+          // console.log(menus);
+          // console.log(elements);
           resolve(response);
         }).catch(error => {
           reject(error);

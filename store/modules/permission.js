@@ -9,7 +9,7 @@ import { getAllMenus } from 'api/login';
  * @param route
  */
 function hasPermission(menus, route) {
-  if (route.authority) {
+  if (route.authority) { 
     if (menus[route.authority] !== undefined) {
       return menus[route.authority];
     } else {
@@ -29,7 +29,7 @@ function filterAsyncRouter(asyncRouterMap, menus, menuDatas) {
   const accessedRouters = asyncRouterMap.filter(route => {
     if (hasPermission(menus, route)) {
       route.name = menuDatas[route.authority].title;
-      route.icon = menuDatas[route.authority].icon;
+      route.icon = menuDatas[route.authority].icon; 
       if (route.children && route.children.length) {
         route.children = filterAsyncRouter(route.children, menus, menuDatas);
       }
@@ -58,11 +58,10 @@ const permission = {
       return new Promise(resolve => {
         getAllMenus().then(data => {
           const menuDatas = {};
-          for (let i = 0; i < data.length; i++) {
-            menuDatas[data[i].code] = data[i];
-          }
-          const accessedRouters = filterAsyncRouter(asyncRouterMap, menus, menuDatas);
-          console.log(accessedRouters);
+          for (let i = 0; i < data.length; i++) { 
+              menuDatas[data[i].code] = data[i]; 
+          } 
+          const accessedRouters = filterAsyncRouter(asyncRouterMap, menus, menuDatas); 
           commit('SET_ROUTERS', accessedRouters);
           resolve();
         });

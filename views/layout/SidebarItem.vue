@@ -8,6 +8,7 @@
 				<span slot="title">{{item.children[0].title}}</span>
 			</el-menu-item>
 		</router-link> --> 
+		<!-- {{item}} -->
 		<el-submenu :index="item.title">
 			<template slot="title">
 				<icon-svg v-if='item.icon' :icon-class="item.icon"></icon-svg>
@@ -16,7 +17,8 @@
 			<template v-for="child in item.children">
 				<sidebar-item class='nest-menu' v-if='child.children&&child.children.length>0' :routes='[child]'> </sidebar-item>
 				<router-link v-else :to="'/'+item.code+'/'+child.code">
-					<el-menu-item :index="item.code+'/'+child.code">
+				<!-- v-if="child.type != 'button'" -->
+					<el-menu-item :index="item.code+'/'+child.code" >
 						<icon-svg v-if='child.icon' :icon-class="child.icon"></icon-svg>
 						<span>{{child.title}}</span>
 					</el-menu-item>

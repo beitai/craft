@@ -8,27 +8,28 @@
           <el-option v-for="item in  staticOptions" :key="item.value" :label="item.label" :value="item.value"> </el-option>
     </el-select>
     <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-    <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+    <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="puls">添加</el-button>
   </div>
   <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-    <el-table-column  align="center" label="姓名"> <template scope="scope">
+    <el-table-column  align="center" label="姓名" min-width="15%"> <template scope="scope">
         <span>{{scope.row.name}}</span>
       </template> </el-table-column>
-    <el-table-column  align="center" label="登录账户"> <template scope="scope">
+    <el-table-column  align="center" label="登录账户" min-width="15%"> <template scope="scope">
             <span>{{scope.row.userName}}</span>
           </template> </el-table-column>
-    <el-table-column  align="center" label="角色"> <template scope="scope">
+    <el-table-column  align="center" label="角色" min-width="15%"> <template scope="scope">
             <span>{{scope.row.groupName}}</span>
           </template> </el-table-column>
-    <el-table-column  align="center" label="联系电话"> <template scope="scope">
+    <el-table-column  align="center" label="联系电话" min-width="15%"> <template scope="scope">
             <span>{{scope.row.phone}}</span>
           </template> </el-table-column>
-    <el-table-column  align="center" label="状态"> <template scope="scope"> 
+    <el-table-column  align="center" label="状态" min-width="15%"> <template scope="scope"> 
           <span v-if="scope.row.status==0">停用</span>
           <span v-if="scope.row.status==1">启用</span>
           
         </template> </el-table-column> 
-    <el-table-column align="center" label="操作" width="350" fixed="right"> <template scope="scope">
+        <!-- fixed="right" -->
+    <el-table-column align="center" label="操作" min-width="25%" > <template scope="scope">
         <el-button size="small" type="success" @click="handleUpdate(scope.row)">编辑
         </el-button>
         <el-button size="small" type="info" @click="handleReset(scope.row)">修改密码
@@ -253,7 +254,7 @@ export default {
       page(this.listQuery)
         .then(response => {
           // console.log(reponse);
-          this.print(response);
+          // this.print(response);
           this.list = response.data.rows;
           this.total = response.data.total;
           this.listLoading = false;

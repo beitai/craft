@@ -118,7 +118,7 @@ export default {
         description: undefined,
         path: undefined,
         enabled: undefined,
-        type: undefined,
+        type: '',
         attr1: undefined
       },
       currentId: -1,

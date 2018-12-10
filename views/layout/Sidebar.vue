@@ -26,7 +26,7 @@
     },
     created(){ 
       // 根据路由 获取菜单 有子集的菜单名称，用来默认展开。 default-openeds
-      // console.log(this.permissionMenus);
+      console.log(this.permissionMenus);
       const menus = [];
       menus.push(this.permissionMenus[0].title) 
       for (let i = 0; i < this.permissionMenus[0].children.length; i++) { 

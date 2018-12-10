@@ -1,7 +1,7 @@
 <template>
 <div class="app-container calendar-list-container">
   <div class="filter-container"> 
-    <template  v-if="Status!='info'">  
+    <template  v-if="Status=='list'">  
       <el-select v-model="listQuery.u9Coding"  clearable filterable  remote :remote-method="selevtValue"  placeholder="U9产品编码" style="width: 200px;" class="filter-item"> 
               <el-option
                 v-for="item in Items"
@@ -13,31 +13,33 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="客户" v-model="listQuery.customer"> </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55">
+        <el-table-column type="selection" min-width="5%">
         </el-table-column>
-        <el-table-column align="center" label="U9产品编码"  > <template scope="scope" >
+        <el-table-column align="center" label="U9产品编码" min-width="10%"> <template scope="scope" >
             <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
             </template> </el-table-column>
-        <el-table-column  align="center" label="产品型号"> <template scope="scope">
+        <el-table-column  align="center" label="产品型号" min-width="10%"> <template scope="scope">
             <span>{{scope.row.productModel}}</span>
           </template> </el-table-column>
-        <el-table-column  align="center" label="客户"> <template scope="scope">
+        <el-table-column  align="center" label="客户" min-width="10%"> <template scope="scope">
                 <span>{{scope.row.customer}}</span>
               </template> </el-table-column>
-        <el-table-column  align="center" label="版本"> <template scope="scope">
+        <el-table-column  align="center" label="版本" min-width="10%"> <template scope="scope">
                 <span>{{scope.row.version}}</span>
               </template> </el-table-column>
-        <el-table-column  align="center" label="文件编码"> <template scope="scope">
+        <el-table-column  align="center" label="文件编码" min-width="15%"> <template scope="scope">
                 <span>{{scope.row.fileCoding}}</span>
               </template> </el-table-column>
-        <el-table-column  align="center" label="盒号"> <template scope="scope">
+        <el-table-column  align="center" label="盒号" min-width="10%"> <template scope="scope">
               <span>{{scope.row.boxNumber}}</span>
             </template> </el-table-column>
-        <el-table-column  align="center" label="箱号"> <template scope="scope">
+        <el-table-column  align="center" label="箱号" min-width="10%"> <template scope="scope">
                 <span>{{scope.row.caseNumber}}</span>
               </template> </el-table-column> 
-        <el-table-column align="center" width="120" label="操作"  fixed="right"> <template scope="scope">
-            <el-button style="margin-left:10px;" size="small" type="info" @click="info(scope.row)">明细
+        <el-table-column align="center" min-width="15%" label="操作"  > <template scope="scope"> 
+            <el-button v-if=" maintainManager_uploadView" size="small" type="info" @click="handupload(scope.row)">上传
+            </el-button> 
+            <el-button size="small" type="info" @click="info(scope.row)">明细
             </el-button>  
         </template></el-table-column> 
       </el-table>
@@ -47,8 +49,8 @@
     </template>
 
 
-   <el-button v-if="Status=='info'" class="filter-item list"  type="primary"  @click="handleFilter">返回列表</el-button>
-   <el-tabs v-model="activeName" :model="form" v-if="Status=='info'">
+   <el-button v-if="Status!='list'" class="filter-item list"  type="primary"  @click="handleFilter">返回列表</el-button>
+   <el-tabs v-model="activeName" :model="form" v-if="Status!='list'">
       <el-tab-pane  label="工艺信息" name="first"> 
           <el-form   :rules="rules" ref="form" label-width="100px"  :inline="true" class="info">
           <el-form-item  label="U9产品编号">
@@ -57,7 +59,7 @@
           <el-form-item label="产品编号">
                 <span v-html="form.productModel"></span> 
           </el-form-item> 
-          <el-form-item  label="客户">
+          <el-form-item  label="客户" class="max_list">
                 <span  class="maxspan" v-html="form.customer"></span>  
           </el-form-item>
           <el-form-item label="文件编号">
@@ -132,7 +134,7 @@
          <el-form-item label="封箱胶纸">
               <span v-html="form.sealingGummedPaper"></span>   
           </el-form-item>   
-          <el-form-item label="面料/底料">
+          <el-form-item label="面料/底料" class="max_list">
               <!-- <span class="maxspan" v-html="form.shellFabric+'/'+form.bedCharge"></span>   -->
               <span class="maxspan" v-html="form.bedCharge"></span>  
           </el-form-item>
@@ -142,38 +144,80 @@
           <el-form-item label="箱号">
               <span v-html="form.caseNumber"></span>  
           </el-form-item>
-          <el-form-item label="子件料号">
+          <el-form-item label="子件料号" class="max_list">
               <span class="maxspan" v-html="form.childThingNumber"></span>   
           </el-form-item> 
-          <el-form-item label="创建人">
-              <span v-html="form.crtName"></span>   
-          </el-form-item> 
-          <el-form-item label="创建时间">
-              <span v-html="form.crtTime"></span>  
-          </el-form-item>
-          <el-form-item label="最后更新人">
-              <span v-html="form.updName"></span>   
-          </el-form-item> 
-          <el-form-item label="最后更新时间">
-              <span v-html="form.updTime"></span>  
-          </el-form-item>  
+          <!-- <template v-if="Status=='info'"> -->
+            <el-form-item label="创建人">
+                <span v-html="form.crtName"></span>   
+            </el-form-item> 
+            <el-form-item label="创建时间">
+                <span v-html="form.crtTime"></span>  
+            </el-form-item>
+            <el-form-item label="最后更新人">
+                <span v-html="form.updName"></span>   
+            </el-form-item> 
+            <el-form-item label="最后更新时间">
+                <span v-html="form.updTime"></span>  
+            </el-form-item>  
+          <!-- </teplate> -->
           <el-form-item label="打商标">  
-              <img :src="form.process1PictureName">
+              <img :src="form.process1PictureName_src">
           </el-form-item> 
           <el-form-item label="钻小口"> 
-              <img :src="form.process2PictureName"> 
+              <img :src="form.process2PictureName_src"> 
           </el-form-item> 
           <el-form-item label="移动喷码"> 
-              <img :src="form.process3PictureName"> 
+              <img :src="form.process3PictureName_src"> 
           </el-form-item> 
           <el-form-item label="包装"> 
-              <img :src="form.process4PictureName">  
+              <img :src="form.process4PictureName_src">  
           </el-form-item> 
         </el-form> 
       </el-tab-pane> 
     </el-tabs>
       
    </div> 
+
+     <el-tabs v-model="activeName1" v-if="Status=='upload'"> 
+          <el-tab-pane  label="工艺图纸上传" name="first" >   
+            <el-form :model="form"  :rules="rules" ref="form" label-width="100px"  class="upload" > 
+            <el-form-item label="打商标" class="max_list">
+                <el-input   placeholder="点击按钮开始上传" v-model="form.process1PictureName" readonly ></el-input>
+                <el-button  size="small" type="info" @click="upload('1')">开始上传</el-button> 
+                <el-button  v-if="form.process1PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process1PictureId,'1')">删除</el-button> 
+              </el-form-item> 
+              <el-form-item  label="钻小孔" class="max_list">
+                <el-input   placeholder="点击按钮开始上传" v-model="form.process2PictureName" readonly ></el-input>
+                <el-button  size="small" type="info"  @click="upload('2')">开始上传</el-button> 
+                <el-button  v-if="form.process2PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process2PictureId,'2')">删除</el-button> 
+              </el-form-item>
+              <el-form-item label="移印喷码" class="max_list">
+                <el-input  placeholder="点击按钮开始上传"  v-model="form.process3PictureName" readonly></el-input>
+                <el-button  size="small" type="info"   @click="upload('3')">开始上传</el-button> 
+                <el-button  v-if="form.process3PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process3PictureId,'3')">删除</el-button> 
+              </el-form-item>
+              <el-form-item label="包装" class="max_list">
+                <el-input  placeholder="点击按钮开始上传"   v-model="form.process4PictureName" readonly ></el-input>
+                <el-button  size="small" type="info" @click="upload('4')">开始上传</el-button> 
+                <el-button  v-if="form.process4PictureName!=null" size="small" type="danger" @click="deleteUpload(form.process4PictureId,'4')">删除</el-button> 
+              </el-form-item> 
+            </el-form>
+        </el-tab-pane> 
+    </el-tabs> 
+    
+    <!--工艺图纸上传弹出框-->
+    <el-dialog :title="textMap[dialogStatus]"  :visible.sync="dialogFormVisible_upload">  
+        <el-upload
+            class="upload-demo" drag
+            :show-file-list="false"
+            :action="'/api/product/process/ftpUploadImg/'+form.id+'/'+form.type"
+            :on-success	= "uploadSubcess">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>  
+     </el-dialog> 
 </div>
 </template>
 
@@ -184,7 +228,8 @@ import {
   getObj,
   delObj,
   putObj,
-  query
+  query,  
+  deluploadObj
 } from 'api/process/view/index';
 import { mapGetters } from 'vuex';
 export default {
@@ -192,6 +237,7 @@ export default {
   data() {
     return {  
       activeName:'first',
+      activeName1: "first",  
       staticOptions: [{
         value:'1',
         label:'有效'
@@ -258,6 +304,8 @@ export default {
         u9Coding:''
       },
       dialogFormVisible: false,
+      dialogFormVisible_upload:false,
+      dialogStatus:false,
       Status: '', 
       textMap: {
         update: '编辑',
@@ -268,6 +316,8 @@ export default {
   },
   created() {
     this.getList(); 
+
+    this.maintainManager_uploadView  = this.elements['uploadManager'];
   },
   computed: {
     ...mapGetters([
@@ -280,7 +330,7 @@ export default {
       this.listLoading = true;
       page(this.listQuery)
         .then(response => {
-          console.log(response);
+          // console.log(response);
           this.list = response.data.rows;
           this.total = response.data.total;
           this.listLoading = false;
@@ -290,12 +340,21 @@ export default {
         });
     },
     info(row) {
-      getObj(row.id)
-        .then(response => {
-          console.log(response);
           this.Status = 'info';
+      getObj(row.id)
+        .then(response => { 
           this.form = response.data;
+          
+          this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version; 
+          this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version; 
+          this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version; 
+          this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version;       
         })
+    },
+    // 上传按钮事件
+    handupload(row){  
+       this.info(row);
+       this.Status = 'upload';
     },
     handleFilter() {
       this.getList();
@@ -326,32 +385,110 @@ export default {
           this.Items = response.data.dataList; 
         }); 
       }
-    }
+    },
+     // 图片上传的弹出框
+    upload(type){ 
+      this.dialogStatus = 'upload';
+      this.dialogFormVisible_upload = true;
+      // 把类型划分为1,2,3,4
+      this.form.type = type; 
+    }, 
+    // 输出上传结果
+    uploadSubcess(response){ 
+      // console.log('上传成功--图片4个接口');
+      // console.log(response);
+      // 时间戳 用来实时更新图片
+      var  data = new Date().getTime();
+
+      var type = response.type  
+      if(type=='1'){
+        this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version+"?time="+data; 
+        this.form.process1PictureName = response.path
+      }else if(type=='2'){
+        this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version+"?time="+data; 
+        this.form.process2PictureName = response.path
+      }else if(type=='3'){
+        this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version+"?time="+data; 
+        this.form.process3PictureName = response.path
+      }else{
+        this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version+"?time="+data;
+        this.form.process4PictureName = response.path
+      }
+      // console.log('添加成功');
+      // console.log(this.form); 
+      this.$notify({
+          title: "成功",
+          message: "上传成功",
+          type: "success",
+          duration: 2000
+        });  
+   },
+    deleteUpload(id,type) {
+      console.log(id);
+      this.$confirm("此操作将永久删除此图片, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        deluploadObj(id).then(() => {
+          this.$notify({
+            title: "成功",
+            message: "删除成功",
+            type: "success",
+            duration: 2000
+          }); 
+        });
+        if(type=='1'){
+          this.form.process1PictureName_src = null; 
+          this.form.process1PictureName = null
+        }else if(type=='2'){
+          this.form.process2PictureName_src = null; 
+          this.form.process2PictureName = null
+        }else if(type=='3'){
+          this.form.process3PictureName_src = null; 
+          this.form.process3PictureName = null
+        }else{
+          this.form.process4PictureName_src = null;
+          this.form.process4PictureName = null
+        }
+      });
+    }, 
   }
 }
 </script>
 
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.el-tabs{
+    .el-form-item{
+      width:45%;
+    }
+    .max_list{
+      // width: 92%;
+      width: 97%;
+    } 
+    .el-input,.el-select { 
+      width: 400px !important;
+    }
+}
 .list{
   position: absolute;
   right:20px;
   z-index: 1;
 }
 .info{
-  padding-top:20px; 
-  border:1px solid;
+  padding-top:20px;  
 } 
 .info span{
   display: inline-block;
-  width: 500px;
+  width: 400px;
   height: 38px;
   text-align: center;  
   border:1px solid;
 }
 .info .maxspan{
   display: inline-block;
-  width: 1115px;
+  width: 985px;
   text-align: center; 
 }
 .info img{
@@ -359,4 +496,8 @@ export default {
   height: 170px;
   margin: 0 100px;
 } 
+.upload .el-button{
+    min-width: 200px; 
+    height:38px;
+}
 </style>

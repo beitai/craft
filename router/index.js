@@ -108,19 +108,19 @@ export const asyncRouterMap = [{
   // }
   ]
 },
-{
-  path: '/authManager',
-  component: Layout,
-  name: '基础配置管理',
-  icon: 'setting',
-  authority: 'authManager',
-  children: [{
-    path: 'serviceManager',
-    component: _import('auth/service/index'),
-    name: '用户管理',
-    authority: 'serviceManager'
-  }]
-}, 
+// {
+//   path: '/authManager',
+//   component: Layout,
+//   name: '基础配置管理',
+//   icon: 'setting',
+//   authority: 'authManager',
+//   children: [{
+//     path: 'serviceManager',
+//     component: _import('auth/service/index'),
+//     name: '用户管理',
+//     authority: 'serviceManager'
+//   }]
+// }, 
 {
   path: '/processManager',
   component: Layout,
@@ -143,7 +143,13 @@ export const asyncRouterMap = [{
     component: _import('process/version/index'),
     // name: '历史版本查看', 
     authority: 'versionManager'
-  } 
+  }
+  // ,{
+  //   path: 'uploadManager',
+  //   component: _import('process/version/index'),
+  //   // name: '历史版本查看', 
+  //   authority: 'uploadManager'
+  // } 
 ]
 }
 
