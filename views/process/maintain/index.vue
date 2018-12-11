@@ -25,38 +25,38 @@
             <el-button class="filter-item"    style="margin-left: 10px;"  type="primary" @click="download">Excel模板下载</el-button>
             <el-button class="filter-item"  v-if=" Status=='version'"    style="margin-left: 10px;float:right;" @click="getListPage()" type="primary" >返回列表</el-button>
         </div> 
-      <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border  highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" min-width="4%">
+        
+      <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row  style="width: 100%"  @selection-change="handleSelectionChange">   
+          <el-table-column type="selection" width="50">
           </el-table-column>
-          <el-table-column align="center" label="U9产品编码" min-width="12%" > <template scope="scope" >
+          <el-table-column align="center" label="U9产品编码" width="200" > <template scope="scope" >
                 <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
               </template> </el-table-column>
-          <el-table-column  align="center" label="产品型号" min-width="10%"> <template scope="scope">
+          <el-table-column  align="center" label="产品型号" width="100"> <template scope="scope">
               <span>{{scope.row.productModel}}</span>
             </template> </el-table-column>
-          <el-table-column  align="center" label="客户" min-width="8%"> <template scope="scope">
+          <el-table-column  align="center" label="客户" width="80"> <template scope="scope">
                   <span>{{scope.row.customer}}</span>
                 </template> </el-table-column>
-          <el-table-column  align="center" label="版本" min-width="8%"> <template scope="scope">
+          <el-table-column  align="center" label="版本" width="80"> <template scope="scope">
                   <span>{{scope.row.version}}</span>
                 </template> </el-table-column>
-          <el-table-column  align="center" label="状态" min-width="8%"> <template scope="scope">
+          <el-table-column  align="center" label="状态" width="80"> <template scope="scope">
                   <span v-if="scope.row.status==0">作废</span>
                   <span v-if="scope.row.status==1">有效</span>
                 </template> </el-table-column>
-          <el-table-column  align="center" label="文件编码" min-width="10%"> <template scope="scope">
+          <el-table-column  align="center" label="文件编码" width="200"> <template scope="scope">
                   <span>{{scope.row.fileCoding}}</span>
                 </template> </el-table-column>
-          <el-table-column  align="center" label="盒号" min-width="10%"> <template scope="scope">
+          <el-table-column  align="center" label="盒号" width="200"> <template scope="scope">
                 <span>{{scope.row.boxNumber}}</span>
               </template> </el-table-column>
-          <el-table-column  align="center" label="箱号" min-width="10%"> <template scope="scope">
+          <el-table-column  align="center" label="箱号" width="200"> <template scope="scope">
                   <span>{{scope.row.caseNumber}}</span>
                 </template> </el-table-column>
-                 <!--  -->
-          <el-table-column align="center" label="操作" width="300"  fixed="right"> <template scope="scope" >
-              <div style="padding:5px 0;">
-                <el-button v-if=" maintainManager_uploadView && Status!='version'" size="small" type="info" @click="handupload(scope.row)">上传
+
+          <el-table-column align="center" label="操作" width="450"  fixed="right"> <template scope="scope" >
+                  <el-button v-if=" maintainManager_uploadView && Status!='version'" size="small" type="info" @click="handupload(scope.row)">上传
                 </el-button> 
                 <el-button v-if=" Status!='version'" size="small" type="success" @click="handleUpdate(scope.row)">编辑
                 </el-button>
@@ -66,15 +66,13 @@
                 </el-button>
                 <!-- <el-button size="small" type="danger" @click="handleDelete1(scope.row)">删除
                 </el-button>   -->
-              </div>
-              <div style="padding-bottom:5px;">
+              <!-- </div> --> 
                 <el-button v-if=" Status!='version'" size="small" type="info"  @click="restore(scope.row)">恢复版本
                 </el-button>
                 <el-button size="small" type="info"   @click="info(scope.row)">明细
                 </el-button>
                 <el-button v-if="Status!='version'" size="small" type="info"  @click="queryVersion(scope.row)" >历史版本
-                </el-button>
-              </div>
+                </el-button> 
             </template> </el-table-column>
         </el-table>
       <div v-show="!listLoading" class="pagination-container">
@@ -424,6 +422,7 @@ import {
   deluploadObj
 } from 'api/process/maintain/index';
 import { mapGetters } from 'vuex';
+import defaultImg from 'assets/images/defaultImg.png';
 export default {
   name: 'user',
   data() {
@@ -541,7 +540,7 @@ export default {
         limit: 10,
         u9Coding: '',
         value: '',
-        status: ''
+        status: '1'
       }, 
       listVersion: {
         page: 1,
@@ -571,6 +570,7 @@ export default {
     this.maintainManager_uploadView  = this.elements['uploadManager'];
     // 导入加入token.
     this.myHeaders.Authorization = this.token; 
+ 
   },
   computed: {
     ...mapGetters([
@@ -626,10 +626,27 @@ export default {
             console.log(this.form);
             // console.log(this.form);      
             // console.log('图片4个接口');
-            this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version; 
-            this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version; 
+            
+            if(this.form.process1PictureName == null){
+              this.form.process1PictureName_src = defaultImg
+            }else{
+              this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version; 
+            }
+            if(this.form.process2PictureName == null){
+              this.form.process2PictureName_src = defaultImg
+            }else{
+              this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version; 
+            }
+            if(this.form.process3PictureName == null){
+              this.form.process3PictureName_src = defaultImg
+            }else{
             this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version; 
+            }
+            if(this.form.process4PictureName == null){
+              this.form.process4PictureName_src = defaultImg
+            }else{              
             this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version;
+            }
       });    
       
     },
@@ -836,16 +853,16 @@ export default {
 
       var  data = new Date().getTime();
         if(type=='1'){
-          this.form.process1PictureName_src = null; 
+          this.form.process1PictureName_src = defaultImg; 
           this.form.process1PictureName = null
         }else if(type=='2'){
-          this.form.process2PictureName_src = null; 
+          this.form.process2PictureName_src = defaultImg; 
           this.form.process2PictureName = null
         }else if(type=='3'){
-          this.form.process3PictureName_src = null; 
+          this.form.process3PictureName_src = defaultImg; 
           this.form.process3PictureName = null
         }else{
-          this.form.process4PictureName_src = null;
+          this.form.process4PictureName_src = defaultImg;
           this.form.process4PictureName = null
         }
       });
@@ -902,7 +919,7 @@ export default {
       getVersion(this.listVersion)
             .then(response => {
               console.log('历史版本');
-              console.log(response);
+              // console.log(response);
               this.list = response.data.rows;
               this.total = response.data.total;
               this.listLoading = false;
@@ -1038,11 +1055,11 @@ export default {
       width: 400px !important;
     }
     .maxinput { 
-      // width: 922px !important;
-      width: 985px !important;
+      width: 922px !important;
+      // width: 985px !important;
     }
     .footer {
-      width: 100%;
+      width: 92%;
       text-align: center;
     }
     .el-button{
@@ -1066,8 +1083,8 @@ export default {
 }
 .info .maxspan{
   display: inline-block;
-  // width: 922px;
-  width: 985px;
+  width: 922px;
+  // width: 985px;
   text-align: center; 
 }
 .info img{

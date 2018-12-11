@@ -15,30 +15,30 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="版本" v-model="listQuery.version"> </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" min-width="5%">
-        </el-table-column>
-        <el-table-column align="center" label="U9产品编码" min-width="10%"> <template scope="scope" >
-            <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
+        <el-table-column type="selection" width="50">
+          </el-table-column>
+          <el-table-column align="center" label="U9产品编码" width="200" > <template scope="scope" >
+                <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
+              </template> </el-table-column>
+          <el-table-column  align="center" label="产品型号" width="100"> <template scope="scope">
+              <span>{{scope.row.productModel}}</span>
             </template> </el-table-column>
-        <el-table-column  align="center" label="产品型号" min-width="10%"> <template scope="scope">
-            <span>{{scope.row.productModel}}</span>
-          </template> </el-table-column>
-        <el-table-column  align="center" label="客户" min-width="10%"> <template scope="scope">
-                <span>{{scope.row.customer}}</span>
+          <el-table-column  align="center" label="客户" width="80"> <template scope="scope">
+                  <span>{{scope.row.customer}}</span>
+                </template> </el-table-column>
+          <el-table-column  align="center" label="版本" width="80"> <template scope="scope">
+                  <span>{{scope.row.version}}</span>
+                </template> </el-table-column> 
+          <el-table-column  align="center" label="文件编码" width="200"> <template scope="scope">
+                  <span>{{scope.row.fileCoding}}</span>
+                </template> </el-table-column>
+          <el-table-column  align="center" label="盒号" width="200"> <template scope="scope">
+                <span>{{scope.row.boxNumber}}</span>
               </template> </el-table-column>
-        <el-table-column  align="center" label="版本" min-width="10%"> <template scope="scope">
-                <span>{{scope.row.version}}</span>
-              </template> </el-table-column>
-        <el-table-column  align="center" label="文件编码" min-width="15%"> <template scope="scope">
-                <span>{{scope.row.fileCoding}}</span>
-              </template> </el-table-column>
-        <el-table-column  align="center" label="盒号" min-width="10%"> <template scope="scope">
-              <span>{{scope.row.boxNumber}}</span>
-            </template> </el-table-column>
-        <el-table-column  align="center" label="箱号" min-width="10%"> <template scope="scope">
-                <span>{{scope.row.caseNumber}}</span>
-              </template> </el-table-column> 
-        <el-table-column align="center"  label="操作"  min-width="15%"> <template scope="scope">
+          <el-table-column  align="center" label="箱号" width="200"> <template scope="scope">
+                  <span>{{scope.row.caseNumber}}</span>
+                </template> </el-table-column>
+        <el-table-column align="center" width="200" label="操作" fixed="right"> <template scope="scope">
             <el-button size="small" type="info" @click="info(scope.row)">明细
             </el-button>  
         </template></el-table-column> 

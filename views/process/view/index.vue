@@ -13,30 +13,30 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="客户" v-model="listQuery.customer"> </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" min-width="5%">
-        </el-table-column>
-        <el-table-column align="center" label="U9产品编码" min-width="10%"> <template scope="scope" >
-            <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
+          <el-table-column type="selection" width="50">
+          </el-table-column>
+          <el-table-column align="center" label="U9产品编码" width="200" > <template scope="scope" >
+                <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
+              </template> </el-table-column>
+          <el-table-column  align="center" label="产品型号" width="100"> <template scope="scope">
+              <span>{{scope.row.productModel}}</span>
             </template> </el-table-column>
-        <el-table-column  align="center" label="产品型号" min-width="10%"> <template scope="scope">
-            <span>{{scope.row.productModel}}</span>
-          </template> </el-table-column>
-        <el-table-column  align="center" label="客户" min-width="10%"> <template scope="scope">
-                <span>{{scope.row.customer}}</span>
+          <el-table-column  align="center" label="客户" width="80"> <template scope="scope">
+                  <span>{{scope.row.customer}}</span>
+                </template> </el-table-column>
+          <el-table-column  align="center" label="版本" width="80"> <template scope="scope">
+                  <span>{{scope.row.version}}</span>
+                </template> </el-table-column> 
+          <el-table-column  align="center" label="文件编码" width="200"> <template scope="scope">
+                  <span>{{scope.row.fileCoding}}</span>
+                </template> </el-table-column>
+          <el-table-column  align="center" label="盒号" width="200"> <template scope="scope">
+                <span>{{scope.row.boxNumber}}</span>
               </template> </el-table-column>
-        <el-table-column  align="center" label="版本" min-width="10%"> <template scope="scope">
-                <span>{{scope.row.version}}</span>
-              </template> </el-table-column>
-        <el-table-column  align="center" label="文件编码" min-width="15%"> <template scope="scope">
-                <span>{{scope.row.fileCoding}}</span>
-              </template> </el-table-column>
-        <el-table-column  align="center" label="盒号" min-width="10%"> <template scope="scope">
-              <span>{{scope.row.boxNumber}}</span>
-            </template> </el-table-column>
-        <el-table-column  align="center" label="箱号" min-width="10%"> <template scope="scope">
-                <span>{{scope.row.caseNumber}}</span>
-              </template> </el-table-column> 
-        <el-table-column align="center" min-width="15%" label="操作"  > <template scope="scope"> 
+          <el-table-column  align="center" label="箱号" width="200"> <template scope="scope">
+                  <span>{{scope.row.caseNumber}}</span>
+                </template> </el-table-column>
+        <el-table-column align="center" width="200" label="操作" fixed="right"> <template scope="scope"> 
             <el-button v-if=" maintainManager_uploadView" size="small" type="info" @click="handupload(scope.row)">上传
             </el-button> 
             <el-button size="small" type="info" @click="info(scope.row)">明细
@@ -231,6 +231,7 @@ import {
   query,  
   deluploadObj
 } from 'api/process/view/index';
+import defaultImg from 'assets/images/defaultImg.png';
 import { mapGetters } from 'vuex';
 export default {
   name: 'user',
@@ -345,10 +346,26 @@ export default {
         .then(response => { 
           this.form = response.data;
           
-          this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version; 
-          this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version; 
-          this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version; 
-          this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version;       
+           if(this.form.process1PictureName == null){
+              this.form.process1PictureName_src = defaultImg
+            }else{
+              this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version; 
+            }
+            if(this.form.process2PictureName == null){
+              this.form.process2PictureName_src = defaultImg
+            }else{
+              this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version; 
+            }
+            if(this.form.process3PictureName == null){
+              this.form.process3PictureName_src = defaultImg
+            }else{
+            this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version; 
+            }
+            if(this.form.process4PictureName == null){
+              this.form.process4PictureName_src = defaultImg
+            }else{              
+            this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version;
+            }       
         })
     },
     // 上传按钮事件
@@ -439,16 +456,16 @@ export default {
           }); 
         });
         if(type=='1'){
-          this.form.process1PictureName_src = null; 
+          this.form.process1PictureName_src = defaultImg; 
           this.form.process1PictureName = null
         }else if(type=='2'){
-          this.form.process2PictureName_src = null; 
+          this.form.process2PictureName_src = defaultImg; 
           this.form.process2PictureName = null
         }else if(type=='3'){
-          this.form.process3PictureName_src = null; 
+          this.form.process3PictureName_src = defaultImg; 
           this.form.process3PictureName = null
         }else{
-          this.form.process4PictureName_src = null;
+          this.form.process4PictureName_src = defaultImg;
           this.form.process4PictureName = null
         }
       });
@@ -463,8 +480,7 @@ export default {
     .el-form-item{
       width:45%;
     }
-    .max_list{
-      // width: 92%;
+    .max_list{ 
       width: 97%;
     } 
     .el-input,.el-select { 
@@ -488,7 +504,8 @@ export default {
 }
 .info .maxspan{
   display: inline-block;
-  width: 985px;
+  width: 922px;
+  // width: 985px;
   text-align: center; 
 }
 .info img{

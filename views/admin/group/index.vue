@@ -17,7 +17,7 @@
       <el-table-column  align="center" label="创建时间" min-width="24%"> <template scope="scope">
               <span>{{scope.row.crtTime}}</span>
             </template> </el-table-column> 
-      <el-table-column align="center" label="操作"   min-width="30%"><template scope="scope">
+      <el-table-column align="center" label="操作"   min-width="30%" fixed="right"><template scope="scope">
         <el-button  size="small" type="success" @click="handleUpdate(scope.row)">编辑
         </el-button>
         <el-button  size="small" type="info"  @click="handlerUser(scope.row)">关联用户
@@ -75,7 +75,7 @@
       <el-table-column  align="center" label="联系电话"> <template scope="scope">
               <span>{{scope.row.telPhone}}</span>
             </template> </el-table-column> 
-      <el-table-column align="center" label="操作" width="350"  ><template scope="scope"> 
+      <el-table-column align="center" label="操作" width="350"  fixed="right"><template scope="scope"> 
         <el-button  size="small" type="danger" @click="handleDeleteUser(scope.row)">删除 
         </el-button>
       </template>

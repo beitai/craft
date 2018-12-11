@@ -5,12 +5,12 @@
   <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
   <levelbar></levelbar>
   <tabs-view></tabs-view>
-  <error-log v-if="log.length>0" class="errLog-container" :logsList="log"></error-log>
+  <!-- <error-log v-if="log.length>0" class="errLog-container" :logsList="log"></error-log> -->
   <screenfull class='screenfull'></screenfull>
   <!-- <span class="username">{{name}}</span> -->
   <el-dropdown class="avatar-container" trigger="click">
     
-    <div class="avatar-wrapper"> <img class="user-avatar" src="http://www.zhglory.com/images/logo.png"> <i class="el-icon-caret-bottom"></i> </div>
+    <div class="avatar-wrapper"> <img class="user-avatar" :src="logo"> <i class="el-icon-caret-bottom"></i> </div>
     <el-dropdown-menu class="user-dropdown" slot="dropdown">
       <!-- <router-link class='inlineBlock' to="/"> -->
       <el-dropdown-item> {{name}} </el-dropdown-item>
@@ -57,7 +57,8 @@ import TabsView from './TabsView';
 import Hamburger from 'components/Hamburger';
 import Screenfull from 'components/Screenfull';
 import ErrorLog from 'components/ErrLog';
-import errLogStore from 'store/errLog';
+import errLogStore from 'store/errLog'; 
+import logo from 'assets/images/logo.png';
 export default {
   components: {
     Levelbar,
@@ -75,6 +76,7 @@ export default {
         }
       }; 
     return {
+      logo:undefined,
       log: errLogStore.state.errLog,
       dialogFormVisible:false, 
       form: {
@@ -148,6 +150,9 @@ export default {
       'id'
     ])
   }, 
+  created (){
+    this.logo = logo 
+  },
   methods: { 
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
@@ -162,9 +167,7 @@ export default {
         this.dialogFormVisible = true;
     },
     reset(formName) {
-      const set = this.$refs;
-      console.log('id输出？？'); 
-      console.log(this.id);
+      const set = this.$refs; 
       this.form.userId = this.id;      
       set[formName].validate(valid => {
         if (valid) { 
@@ -208,8 +211,7 @@ export default {
     }
     .screenfull {
         position: absolute;
-        right: 160px;
-        // right: 150px; 
+        right: 80px;  
         top: 16px;
         color: red;
     }
@@ -228,7 +230,7 @@ export default {
             margin-top: 5px;
             position: relative;
             .user-avatar {
-                width: 120px;
+                width: 40px;
                 height: 40px;
                 border-radius: 10px;
             }

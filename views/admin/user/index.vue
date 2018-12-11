@@ -29,7 +29,7 @@
           
         </template> </el-table-column> 
         <!-- fixed="right" -->
-    <el-table-column align="center" label="操作" min-width="25%" > <template scope="scope">
+    <el-table-column align="center" label="操作" min-width="25%"  fixed="right"> <template scope="scope">
         <el-button size="small" type="success" @click="handleUpdate(scope.row)">编辑
         </el-button>
         <el-button size="small" type="info" @click="handleReset(scope.row)">修改密码

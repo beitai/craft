@@ -5,7 +5,7 @@
   </el-col> 
   <el-col :span="24" style='margin-top:15px;'> 
       <!-- <span>选择的值为: {{ result }}</span> -->
-      <el-table ref="elementTable" :data="list" border fit highlight-current-row  style="width: 100%">
+      <el-table ref="elementTable" :data="list" border fit    style="width: 100%">
       <!-- <el-table :key='tableKey' :data="list" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange"> -->
          <!-- <el-checkbox  v-model="result" :value="scope.row.id" @change="handleCheckAllChange(1,scope.row.id)"></el-checkbox> -->
         <!-- <el-table-column   align="center" label="系统">
@@ -101,8 +101,8 @@ export default {
     getList() {
       fetchTree(this.listQuery).then(data => {
         this.list = data;
-        // console.log("表单的数据");
-        // console.log(this.list);
+        console.log("表单的数据");
+        console.log(this.list);
 
         // this.data=res.data;
         //           for(var i=0;i<this.data.length;i++){//遍历选择的内容
@@ -165,7 +165,12 @@ export default {
           }
         }
       }else{
-      //  console.log("这个是三级菜单")  
+       console.log("这个是三级菜单");
+        //  当里面没的时候进行添加。并且选择第三层时进行第二层添加。 
+        // console.log(row); 
+        if(this.result.indexOf(row.parentId) == '-1'){
+            this.result.push(row.parentId); 
+        } 
       }   
     },
     update(){
