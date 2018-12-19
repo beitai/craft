@@ -54,28 +54,37 @@
           <el-table-column  align="center" label="箱号" width="200"> <template scope="scope">
                   <span>{{scope.row.caseNumber}}</span> 
                 </template> </el-table-column>
-          <!-- <el-table-column v-if="Status =='version' "  align="center" label="" width="200" fixed="right"> <template scope="scope">
-                <el-button   size="small" type="info"   @click="info(scope.row)">明细
-                </el-button>
-          </template> </el-table-column> -->
-          <el-table-column  v-if="Status!='version'"     align="center" label="操作" width="450" fixed="right"> 
+         
+          <el-table-column v-if=" Status!='version'"   align="center" label="操作" width="450" fixed="right"> 
             <template scope="scope" >
                 <el-button v-if=" maintainManager_uploadView && scope.row.status==1 && Status!='version'" size="small" type="info" @click="handupload(scope.row)">上传
                 </el-button> 
-                <el-button v-if=" scope.row.status==1 && Status!='version'"  size="small" type="success" @click="handleUpdate(scope.row)">编辑
+                <el-button v-if=" scope.row.status==1"  size="small" type="success" @click="handleUpdate(scope.row)">编辑
                 </el-button>
-                <el-button v-if=" scope.row.status==1 && Status!='version'" size="small" type="warning" @click="handleDelete(scope.row)">作废
+                <el-button v-if=" scope.row.status==1" size="small" type="warning" @click="handleDelete(scope.row)">作废
                 </el-button>
-                <el-button v-if=" scope.row.status==0 && Status!='version'" size="small" type="warning" @click="handleDelete(scope.row)">启用
+                <el-button v-if=" scope.row.status==0" size="small" type="warning" @click="handleDelete(scope.row)">启用
                 </el-button>
-                <el-button v-if=" scope.row.status==1 && Status!='version'"  size="small" type="info"  @click="restore(scope.row)">恢复版本
+                <el-button v-if=" scope.row.status==1"  size="small" type="info"  @click="restore(scope.row)">恢复版本
                 </el-button>
-                <el-button   size="small" type="info"   @click="info(scope.row)">明细
+                <el-button  size="small" type="info"   @click="info(scope.row)">明细
                 </el-button>
-                <el-button  v-if=" Status!='version'" size="small" type="info"  @click="queryVersion(scope.row)" >历史版本
+                <el-button  size="small" type="info"  @click="queryVersion(scope.row)" >历史版本
                 </el-button> 
               </template> 
-          </el-table-column>  
+          </el-table-column>
+          <!-- <el-table-column  v-else    align="center" label="操作" width="200" fixed="right"> 
+              <template scope="scope"  >
+                {{Status}}
+                <el-button v-if=" scope.row.status==1" size="small" type="warning" @click="handleDelete(scope.row)">作废
+                </el-button>
+                <el-button v-if=" scope.row.status==0" size="small" type="warning" @click="handleDelete(scope.row)">启用
+                </el-button> 
+                <el-button  size="small" type="info"   @click="info(scope.row)">明细
+                </el-button> 
+              </template> 
+          </el-table-column>  -->
+       
         </el-table>
       <div v-show="!listLoading" class="pagination-container">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
@@ -110,7 +119,7 @@
     <el-tabs  v-if="Status != 'list' && Status != 'version'" v-model="activeName">
       <el-tab-pane  :label="textMap[Status]" name="first">   
           
-        <el-form :model="form" v-if="Status == 'create' || Status=='update'"  :rules="rules" ref="form" label-width="100px"  :inline="true" >
+        <el-form :model="form" v-if="Status == 'create' || Status=='update'"  :rules="rules" ref="form" label-width="80px"  :inline="true" >
               <el-row>
                 <el-col :span="12">
                   <el-form-item label="u9产品编号" class="max_lable">  
@@ -132,28 +141,7 @@
                 </el-col>
              </el-row>
               
-             <el-row>
-                <el-col :span="24">
-                  <el-form-item  label="客户" >
-                    <el-input   placeholder="请输入客户名称" v-model="form.customer" class="maxinput"></el-input>
-                  </el-form-item>
-                </el-col>
-             </el-row> 
-      
-            <el-row>
-                <el-col :span="12"> 
-                    <el-form-item label="文件编号">
-                      <el-input  placeholder="请输入文件编码" v-model="form.fileCoding" ></el-input>
-                    </el-form-item> 
-                </el-col> 
-                <el-col :span="12"> 
-                  <el-form-item label="版本">
-                    <el-input  placeholder="请输入版本" v-model="form.version"></el-input>
-                  </el-form-item> 
-                </el-col>
-             </el-row> 
-
-            <el-row> 
+              <el-row> 
                 <el-col :span="12">
                   <el-form-item label="发放日期">
                     <el-date-picker type="datetime" placeholder="选择日期"  v-model="form.issueDate" value-format="yyyy-MM-DD hh:mm:ss" style="width: 100%;"></el-date-picker>
@@ -164,10 +152,30 @@
                           <el-date-picker type="datetime" placeholder="选择日期"  v-model="form.updateDate" value-format="yyyy-MM-DD hh:mm:ss" style="width: 100%;"></el-date-picker>
                     </el-form-item>
                 </el-col> 
-             </el-row>               
+             </el-row>
 
              <el-row>
-                <el-col :span="12"> 
+                <el-col :span="8">
+                  <el-form-item  label="客户" >
+                    <el-input   placeholder="请输入客户名称" v-model="form.customer"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8"> 
+                    <el-form-item label="文件编号">
+                      <el-input  placeholder="请输入文件编码" v-model="form.fileCoding" ></el-input>
+                    </el-form-item> 
+                </el-col> 
+                <el-col :span="8"> 
+                  <el-form-item label="版本">
+                    <el-input  placeholder="请输入版本" v-model="form.version"></el-input>
+                  </el-form-item> 
+                </el-col>
+             </el-row> 
+             
+          
+
+             <el-row>
+                <el-col :span="8"> 
                       <el-form-item label="钢印"  >
                         <el-select v-model="form.steelSeal" placeholder="请选择 ">
                           <el-option label="有" value="有"></el-option>
@@ -175,15 +183,12 @@
                         </el-select>
                         </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="8">
                         <el-form-item label="涂喷颜色">
                           <el-input  placeholder="请输入涂喷颜色" v-model="form.sprayingColor"></el-input>
                         </el-form-item>
                 </el-col>
-             </el-row>
-
-             <el-row>
-                 <el-col :span="12"> 
+                 <el-col :span="8"> 
                         <el-form-item label="移印" prop="region">
                           <el-select v-model="form.moveSeal" placeholder="请选择 ">
                             <el-option label="有" value="有"></el-option>
@@ -191,38 +196,38 @@
                           </el-select>
                         </el-form-item>
                 </el-col>
-                <el-col :span="12"> 
-                    <el-form-item label="汽泡带" >
-                      <el-select v-model="form.bubbleWith  " placeholder="请选择 ">
+             </el-row>
+
+             <el-row>
+                <el-col :span="8"> 
+                    <el-form-item label="汽泡带" prop="region">
+                      <el-select v-model="form.pofPlasticProducts" placeholder="请选择 ">
                         <el-option label="透明" value="透明"></el-option>
                         <el-option label="专用" value="专用"></el-option>
                         <el-option label="无" value="无"></el-option>
                       </el-select>
                      </el-form-item>
                 </el-col>
-             </el-row>
-             <el-row>
-              <el-col :span="12"> 
-                    <el-form-item label="产品POF过塑" >
-                        <el-select v-model="form.pofPlasticProducts" placeholder="请选择 ">
-                          <el-option label="透明" value="透明"></el-option>
-                          <el-option label="专用" value="专用"></el-option>
-                          <el-option label="无" value="无"></el-option>
-                        </el-select>
-                    </el-form-item> 
+                <el-col :span="8"> 
+                  <el-form-item label="产品POF过塑" prop="region">
+                      <el-select v-model="form.pofPlasticProducts" placeholder="请选择 ">
+                        <el-option label="透明" value="透明"></el-option>
+                        <el-option label="专用" value="专用"></el-option>
+                        <el-option label="无" value="无"></el-option>
+                      </el-select>
+                  </el-form-item>
+                </el-col> 
+                <el-col :span="8"> 
+                    <el-form-item label="纸筒" prop="region">
+                      <el-select v-model="form.pofPlasticProducts" placeholder="请选择 ">
+                        <el-option label="有" value="有"></el-option>
+                        <el-option label="无" value="无"></el-option>
+                      </el-select>
+                     </el-form-item>
                 </el-col>
-                  <el-col :span="12"> 
-                      <el-form-item label="纸筒" >
-                        <el-select v-model="form.PaperTube" placeholder="请选择 ">
-                          <el-option label="有" value="有"></el-option>
-                          <el-option label="无" value="无"></el-option>
-                        </el-select>
-                      </el-form-item>
-                  </el-col> 
              </el-row>
-
              <el-row> 
-                <el-col :span="12"> 
+                <el-col :span="8"> 
                     <el-form-item label="箱过塑" prop="region">
                       <el-select v-model="form.casePlastic" placeholder="请选择 ">
                         <el-option label="透明" value="透明"></el-option>
@@ -231,7 +236,7 @@
                       </el-select>
                      </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="8">
                      <el-form-item label="盒过塑" prop="region">
                       <el-select v-model="form.boxPlastic" placeholder="请选择 ">
                         <el-option label="透明" value="透明"></el-option>
@@ -243,25 +248,22 @@
              </el-row>
              
              <el-row>
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                     <el-form-item label="盒标签1">
                       <el-input  placeholder="请输入盒标签1" v-model="form.box1Label" ></el-input>
                     </el-form-item>
                 </el-col> 
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                     <el-form-item label="数量">
                       <el-input  placeholder="请输入数量" v-model="form.box1Num" ></el-input>
                     </el-form-item>
-                </el-col>  
-             </el-row>
-
-             <el-row>  
-                <el-col :span="12"> 
+                </el-col> 
+                <el-col :span="6"> 
                      <el-form-item label="盒标签2">
                       <el-input  placeholder="请输入盒标签2" v-model="form.box2Label"></el-input>
                     </el-form-item>
                 </el-col> 
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                     <el-form-item label="数量">
                       <el-input  placeholder="请输入数量" v-model="form.box2Num" ></el-input>
                     </el-form-item>
@@ -269,24 +271,22 @@
              </el-row>
               
              <el-row>
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                      <el-form-item label="箱标签1">
                       <el-input  placeholder="请输入箱标签1" v-model="form.case1Label" ></el-input>
                     </el-form-item>
                 </el-col> 
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                      <el-form-item label="数量">
                       <el-input  placeholder="请输入数量" v-model="form.case1Num" ></el-input>
                     </el-form-item>
-                </el-col>  
-             </el-row>
-             <el-row> 
-                <el-col :span="12"> 
+                </el-col> 
+                <el-col :span="6"> 
                       <el-form-item label="箱标签2">
                         <el-input  placeholder="请输入箱标签2" v-model="form.case2Label"></el-input>
                       </el-form-item>
                 </el-col> 
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                     <el-form-item label="数量">
                       <el-input  placeholder="请输入数量" v-model="form.case2Num" ></el-input>
                     </el-form-item>
@@ -294,24 +294,22 @@
              </el-row>
             
              <el-row>
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                     <el-form-item label="说明书"> 
                             <el-input  placeholder="请输入说明书" v-model="form.instructions" ></el-input>   
                     </el-form-item>
                 </el-col> 
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                       <el-form-item label="合格证" > 
                               <el-input  placeholder="请输入合格证" v-model="form.qualifiedCertificate" ></el-input>    
                       </el-form-item>
-                </el-col>  
-             </el-row>
-             <el-row> 
-                <el-col :span="12"> 
+                </el-col> 
+                <el-col :span="6"> 
                       <el-form-item label="封口贴"> 
                               <el-input  placeholder="请输入封口贴" v-model="form.sealingPaste" ></el-input>  
                       </el-form-item> 
                 </el-col> 
-                <el-col :span="12"> 
+                <el-col :span="6"> 
                       <el-form-item label="封箱胶纸">
                         <el-select v-model="form.sealingGummedPaper" placeholder="请选择"> 
                           <el-option label="透明" value="透明"></el-option>
@@ -321,6 +319,7 @@
                       </el-form-item> 
                 </el-col> 
              </el-row>
+              
              <el-row> 
                 <el-col :span="12">
                    <el-form-item label="打包带" >
@@ -348,20 +347,15 @@
         </el-form>  
             
         <el-form :model="form" v-if="Status == 'info' || Status=='upload'"  :rules="rules" ref="form" label-width="100px"  :inline="true" class="info">
-            
-            <el-row> 
-              <el-form-item  label="U9产品编号" >
-                <span  v-html="form.u9Coding"></span>
-              </el-form-item>
-              <el-form-item label="产品编号" >
-                    <span v-html="form.productModel"></span> 
-              </el-form-item> 
-              <el-form-item  label="客户">
-                    <span v-html="form.customer"></span>  
-              </el-form-item>
-            </el-row> 
-
-            <el-row> 
+            <el-form-item  label="U9产品编号" >
+              <span  v-html="form.u9Coding"></span>
+            </el-form-item>
+            <el-form-item label="产品编号" >
+                  <span v-html="form.productModel"></span> 
+            </el-form-item> 
+            <el-form-item  label="客户">
+                  <span v-html="form.customer"></span>  
+            </el-form-item>
             <el-form-item label="文件编号" >
                   <span v-html="form.fileCoding"></span>  
             </el-form-item>
@@ -371,35 +365,20 @@
             <el-form-item label="发放日期" >
                   <span v-html="form.issueDate"></span>   
             </el-form-item> 
-            </el-row>
-             
-            <el-row> 
             <el-form-item label="更改日期" >  
                   <span v-html="form.updateDate"></span>   
             </el-form-item>
             <el-form-item label="钢印"  >
                   <span v-html="form.steelSeal"></span>    
-            </el-form-item> 
-            <el-form-item label="涂喷颜色" >
-                    <span v-html="form.sprayingColor"></span>     
             </el-form-item>
-            </el-row> 
-            
-            <el-row> 
+            <el-form-item label="涂喷颜色" >
+                  <span v-html="form.sprayingColor"></span>     
+            </el-form-item>
             <el-form-item label="移印" prop="region" >
                   <span v-html="form.moveSeal"></span>      
-            </el-form-item> 
-            <el-form-item label="汽泡带" prop="region" >
-                  <span v-html="form.bubbleWith"></span>       
-            </el-form-item> 
+            </el-form-item>
             <el-form-item label="产品POF过塑" prop="region" >
                 <span v-html="form.pofPlasticProducts"></span>       
-            </el-form-item>
-            </el-row> 
-            
-            <el-row> 
-            <el-form-item label="纸筒" prop="region" >
-                <span v-html="form.PaperTube"></span>       
             </el-form-item>
             <el-form-item label="箱过塑" prop="region" >
                 <span v-html="form.casePlastic"></span>        
@@ -407,130 +386,87 @@
             <el-form-item label="盒过塑" prop="region" >
                 <span v-html="form.boxPlastic"></span> 
             </el-form-item>
-            </el-row> 
-            
-            <el-row class="min_span">  
-              <el-form-item label="盒标签1" >
-                  <span v-html="form.box1Label"></span>  
-              </el-form-item>
-              <el-form-item label="数量" >
-                  <span v-html="form.box1Num"></span>   
-              </el-form-item>
-              <el-form-item label="盒标签2" >
-                  <span v-html="form.box2Label"></span>    
-              </el-form-item>
-              <el-form-item label="数量" >
-                  <span v-html="form.box2Num"></span>    
-              </el-form-item>
-            </el-row> 
-            
-            <el-row class="min_span">  
-              <el-form-item label="箱标签1" >
-                  <span v-html="form.case1Label"></span>   
-              </el-form-item>
-              <el-form-item label="数量" >
-                  <span v-html="form.case1Num"></span>    
-              </el-form-item>
-              <el-form-item label="箱标签2" >
-                  <span v-html="form.case2Label"></span>     
-              </el-form-item>
-              <el-form-item label="数量" >
-                  <span v-html="form.case2Num"></span>  
-              </el-form-item>
-            </el-row> 
-            
-            <el-row class="min_span">  
-              <el-form-item label="说明书" >
-                  <span v-html="form.instructions"></span>    
-              </el-form-item>
-              <el-form-item label="合格证" >
-                  <span v-html="form.qualifiedCertificate"></span>    
-              </el-form-item>
-              <el-form-item label="封口贴" >
-                  <span v-html="form.sealingPaste"></span>
-              </el-form-item>
-            <el-form-item label="封箱胶纸" >
-                  <span v-html="form.sealingGummedPaper"></span>   
-              </el-form-item>   
-            </el-row>  
-            
-            <el-row class="max_span"> 
+            <el-form-item label="盒标签1" >
+                <span v-html="form.box1Label"></span>  
+            </el-form-item>
+            <el-form-item label="数量" >
+                <span v-html="form.box1Num"></span>   
+            </el-form-item>
+            <el-form-item label="盒标签2" >
+                <span v-html="form.box2Label"></span>    
+            </el-form-item>
+            <el-form-item label="数量" >
+                <span v-html="form.box2Num"></span>    
+            </el-form-item>
+            <el-form-item label="箱标签1" >
+                <span v-html="form.case1Label"></span>   
+            </el-form-item>
+            <el-form-item label="数量" >
+                <span v-html="form.case1Num"></span>    
+            </el-form-item>
+            <el-form-item label="箱标签2" >
+                <span v-html="form.case2Label"></span>     
+            </el-form-item>
+            <el-form-item label="数量" >
+                <span v-html="form.case2Num"></span>  
+            </el-form-item>
+            <el-form-item label="说明书" >
+                <span v-html="form.instructions"></span>    
+            </el-form-item>
+            <el-form-item label="合格证" >
+                <span v-html="form.qualifiedCertificate"></span>    
+            </el-form-item>
+            <el-form-item label="封口贴" >
+                <span v-html="form.sealingPaste"></span>
+            </el-form-item>
             <el-form-item label="打包带" >
                 <span v-html="form.packagingTape"></span>  
             </el-form-item>
             <el-form-item label="数量(条)" >
                 <span v-html="form.packagingTapeNumber"></span>  
             </el-form-item>
-            </el-row>  
-            
-            <el-row>
-            <el-form-item label="面料/底料">
+          <el-form-item label="封箱胶纸" >
+                <span v-html="form.sealingGummedPaper"></span>   
+            </el-form-item>   
+            <el-form-item label="面料/底料" class="max_list">
                 <!-- <span class="maxspan" v-html="form.shellFabric+'/'+form.bedCharge"></span>   -->
                 <span class="maxspan" v-html="form.bedCharge"></span>  
             </el-form-item>
-            </el-row>  
-            
-            <el-row class="max_span"> 
             <el-form-item label="盒号" >
                 <span v-html="form.boxNumber"></span>   
             </el-form-item> 
             <el-form-item label="箱号" >
                 <span v-html="form.caseNumber"></span>  
             </el-form-item>
-            </el-row>  
-            
-            <el-row class="max_span">
-              <el-form-item label="子件料号" >
-                  <span  v-html="form.childThingNumber"></span>   
-              </el-form-item>
-              <el-form-item label="备注" >
-                  <span v-html="form.remark"></span>  
-              </el-form-item>
-            </el-row>  
+            <el-form-item label="子件料号" class="max_list">
+                <span class="maxspan" v-html="form.childThingNumber"></span>   
+            </el-form-item>
             <template v-if="Status=='info' && maintainManager_uploadView">
-              <el-row class="max_span"> 
                 <el-form-item label="创建人" >
                     <span v-html="form.crtName"></span>   
                 </el-form-item> 
                 <el-form-item label="创建时间" >
                     <span v-html="form.crtTime"></span>  
                 </el-form-item>
-              </el-row>  
-              <el-row class="max_span"> 
-                <el-form-item label="最后更新人" >
+                  <el-form-item label="最后更新人" >
                     <span v-html="form.updName"></span>   
                 </el-form-item> 
                 <el-form-item label="最后更新时间" >
                     <span v-html="form.updTime"></span>  
               </el-form-item> 
-             </el-row> 
-
             </template>
-            
-             <el-row> 
-                 <el-col :span="12">  
-                    <el-form-item label="打商标" >  
-                        <img :src="form.process1PictureName_src">
-                    </el-form-item> 
-                </el-col>  
-                 <el-col :span="12">  
-                    <el-form-item label="衬片钻小孔" > 
-                        <img :src="form.process2PictureName_src"> 
-                    </el-form-item> 
-                </el-col>  
-             </el-row> 
-             <el-row> 
-                 <el-col :span="12">  
-                    <el-form-item label="移印喷码" > 
-                        <img :src="form.process3PictureName_src"> 
-                    </el-form-item> 
-                </el-col>  
-                 <el-col :span="12">  
-                    <el-form-item label="包装" > 
-                        <img :src="form.process4PictureName_src">  
-                    </el-form-item> 
-                </el-col>  
-             </el-row> 
+            <el-form-item label="打商标" >  
+                <img :src="form.process1PictureName_src">
+            </el-form-item> 
+            <el-form-item label="衬片钻小孔" > 
+                <img :src="form.process2PictureName_src"> 
+            </el-form-item> 
+            <el-form-item label="移印喷码" > 
+                <img :src="form.process3PictureName_src"> 
+            </el-form-item> 
+            <el-form-item label="包装" > 
+                <img :src="form.process4PictureName_src">  
+            </el-form-item> 
         </el-form> 
 
       </el-tab-pane>  
@@ -638,9 +574,7 @@ export default {
         updateDate: undefined,
         steelSeal: undefined,
         moveSeal: undefined,
-        bubbleWith:undefined,
-        pofPlasticProducts: undefined,
-        paperTube:undefined, 
+        pofPlasticProducts: undefined, 
         boxPlastic: undefined,
         casePlastic: undefined,
         box1Label: undefined,
@@ -1180,9 +1114,7 @@ export default {
         updateDate: undefined,
         steelSeal: undefined,
         moveSeal: undefined,
-        bubbleWith:undefined,
-        pofPlasticProducts: undefined,
-        paperTube:undefined, 
+        pofPlasticProducts: undefined, 
         boxPlastic: undefined,
         casePlastic: undefined,
         box1Label: undefined,
@@ -1235,8 +1167,12 @@ export default {
     //   }
     // }
     .el-input,.el-select { 
-      width: 400px !important;
-    } 
+      width: 250px !important;
+    }
+    // .maxinput { 
+    //   width: 922px !important;
+    //   // width: 985px !important;
+    // }
     .footer {
       width: 92%;
       text-align: center;
@@ -1255,21 +1191,14 @@ export default {
 }  
 .info span{
   display: inline-block;
-  width: 260px;
+  width: 400px;
   height: 38px;
   text-align: center;  
   border:1px solid;
 }
-.info .min_span span{
-  width: 170px;
-}
-.info .max_span span{
-  width: 450px;
-}
 .info .maxspan{
   display: inline-block;
-  width: 1015px;
-  // width: 635px;
+  width: 922px;
   // width: 985px;
   text-align: center; 
 }
@@ -1278,7 +1207,6 @@ export default {
   height: 170px;
   margin: 0 100px;
 }
-
 .upload .el-button{
     min-width: 200px; 
     height:38px;

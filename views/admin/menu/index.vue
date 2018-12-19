@@ -10,10 +10,10 @@
 
 <el-row>
   <el-col :span="8" style='margin-top:15px;'>
-    <el-input
+    <!-- <el-input
       placeholder="输入关键字进行过滤"
       v-model="filterText">
-    </el-input>
+    </el-input> -->
     <el-tree
       class="filter-tree"
       :data="treeData"
@@ -37,9 +37,9 @@
           <el-form-item label="标题" prop="title">
           <el-input v-model="form.title" :disabled="formEdit"  placeholder="请输入标题"></el-input>
       </el-form-item>
-          <el-form-item label="父级节点" prop="parentId">
+      <!-- <el-form-item label="父级节点" prop="parentId">
           <el-input v-model="form.parentId" :disabled="formEdit" placeholder="请输入父级节点" readonly></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <!-- <el-form-item label="图标" prop="icon">
           <el-input v-model="form.icon" :disabled="formEdit" placeholder="请输入图标"></el-input>
       </el-form-item> -->
@@ -91,7 +91,7 @@ export default {
   },
   data() {
     return {
-      filterText: '',
+      // filterText: '',
       list: null,
       total: null,
       formEdit: true,
@@ -124,11 +124,11 @@ export default {
       currentId: -1,
     }
   },
-  watch: {
-    filterText(val) {
-      this.$refs.menuTree.filter(val);
-    }
-  },
+  // watch: {
+  //   filterText(val) {
+  //     this.$refs.menuTree.filter(val);
+  //   }
+  // },
   created() {
     this.getList();
   },
@@ -156,8 +156,8 @@ export default {
       });
       this.currentId = data.id;
       this.showElement = true;
-      this.$refs.menuElement.menuId = data.id;
-      this.$refs.menuElement.getList();
+      // this.$refs.menuElement.menuId = data.id;
+      // this.$refs.menuElement.getList(); 
     },
     handlerEdit() {
       if (this.form.id) {

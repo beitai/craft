@@ -44,7 +44,8 @@
 		}
 		.sidebar-container {
 			transition: width 0.28s ease-out;
-			width: 210px;
+			// width: 210px;
+			width: 180px;
 			height: 100%;
 			position: fixed;
 			top: 0;
@@ -57,7 +58,8 @@
 		.main-container {
 			min-height: 100%;
 			transition: margin-left 0.28s ease-out;
-			margin-left: 210px;
+			// margin-left: 210px;
+			margin-left:180px;
 		}
 	}
 </style>

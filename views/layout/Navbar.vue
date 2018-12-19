@@ -164,6 +164,7 @@ export default {
         });
     },
     handleReset() { 
+        this.resetTemp();
         this.dialogFormVisible = true;
     },
     reset(formName) {
@@ -188,6 +189,13 @@ export default {
     },
     cancel() { 
         this.dialogFormVisible = false;
+    },
+    resetTemp() {
+      this.form = {
+        newPassword: undefined,
+        confirmPassword: undefined,
+        oldPassword: undefined,
+      }
     },
   }
 }

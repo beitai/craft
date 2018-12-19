@@ -62,18 +62,21 @@ service.interceptors.response.use(
       });
       return Promise.reject('error');
     }
-    if (response.status !== 200 && res.status !== 200) {
+    if (response.status !== 200 && res.status !== 200) { 
       Message({
         message: res.message,
         type: 'error',
         duration: 5 * 1000
       });
     } else {
+      // console.log('12312321');
+      // console.log(response);
       return response.data; 
     }
   },
   error => {
     // console.log(error); // for debug
+    // console.log(error.response.data.message); // for debug
     Message({
       // message: error.message,
       message: error.response.data.message,
