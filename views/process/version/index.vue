@@ -17,28 +17,22 @@
       <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50">
           </el-table-column>
-          <el-table-column align="center" label="U9产品编码" width="200" > <template scope="scope" >
+          <el-table-column align="center" label="U9产品编码" min-width="20%" > <template scope="scope" >
                 <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
               </template> </el-table-column>
-          <el-table-column  align="center" label="产品型号" width="150"> <template scope="scope">
+          <el-table-column  align="center" label="产品型号" min-width="20%"> <template scope="scope">
               <span>{{scope.row.productModel}}</span>
             </template> </el-table-column>
-          <el-table-column  align="center" label="客户" width="80"> <template scope="scope">
+          <el-table-column  align="center" label="客户" min-width="15%"> <template scope="scope">
                   <span>{{scope.row.customer}}</span>
                 </template> </el-table-column>
-          <el-table-column  align="center" label="版本" width="80"> <template scope="scope">
+          <el-table-column  align="center" label="版本" min-width="15%"> <template scope="scope">
                   <span>{{scope.row.version}}</span>
                 </template> </el-table-column> 
-          <el-table-column  align="center" label="文件编码" width="200"> <template scope="scope">
+          <el-table-column  align="center" label="文件编码" min-width="20%"> <template scope="scope">
                   <span>{{scope.row.fileCoding}}</span>
-                </template> </el-table-column>
-          <el-table-column  align="center" label="盒号" width="200"> <template scope="scope">
-                <span>{{scope.row.boxNumber}}</span>
-              </template> </el-table-column>
-          <el-table-column  align="center" label="箱号" width="200"> <template scope="scope">
-                  <span>{{scope.row.caseNumber}}</span>
-                </template> </el-table-column>
-        <el-table-column align="center" width="150" label="操作" fixed="right"> <template scope="scope">
+                </template> </el-table-column> 
+        <el-table-column align="center" min-width="15%" label="操作" fixed="right"> <template scope="scope">
             <el-button size="small" type="info" @click="info(scope.row)">明细
             </el-button>  
         </template></el-table-column> 
@@ -94,7 +88,7 @@
             <el-form-item label="移印" prop="region" >
                   <span v-html="form.moveSeal"></span>      
             </el-form-item> 
-            <el-form-item label="汽泡带" prop="region" >
+            <el-form-item label="汽泡袋" prop="region" >
                   <span v-html="form.bubbleWith"></span>       
             </el-form-item> 
             <el-form-item label="产品POF过塑" prop="region" >
@@ -104,7 +98,7 @@
             
             <el-row> 
             <el-form-item label="纸筒" prop="region" >
-                <span v-html="form.PaperTube"></span>       
+                <span v-html="form.paperTube"></span>       
             </el-form-item>
             <el-form-item label="箱过塑" prop="region" >
                 <span v-html="form.casePlastic"></span>        
@@ -184,55 +178,47 @@
             </el-form-item>
             </el-row>  
             
-            <el-row class="max_span">
+             <el-row>
               <el-form-item label="子件料号" >
-                  <span  v-html="form.childThingNumber"></span>   
-              </el-form-item>
-              <el-form-item label="备注" >
-                  <span v-html="form.remark"></span>  
+                   <el-input type="textarea" class="maxspan" v-model="form.childThingNumber" readonly></el-input>
               </el-form-item>
             </el-row>  
-            <template v-if="Status=='info' ">
-              <el-row class="max_span"> 
-                <el-form-item label="创建人" >
-                    <span v-html="form.crtName"></span>   
-                </el-form-item> 
-                <el-form-item label="创建时间" >
-                    <span v-html="form.crtTime"></span>  
-                </el-form-item>
-              </el-row>  
-              <el-row class="max_span"> 
-                <el-form-item label="最后更新人" >
-                    <span v-html="form.updName"></span>   
-                </el-form-item> 
-                <el-form-item label="最后更新时间" >
-                    <span v-html="form.updTime"></span>  
-              </el-form-item> 
-             </el-row> 
-
-            </template>
             
-             <el-row> 
+            <el-row>
+              <el-form-item label="备注" > 
+                   <el-input type="textarea" class="maxspan" v-model="form.remark" readonly></el-input>
+              </el-form-item>
+            </el-row> 
+            
+              <el-row> 
                  <el-col :span="12">  
                     <el-form-item label="打商标" >  
+                      <a :href="form.process1PictureName_src" target="_blank">
                         <img :src="form.process1PictureName_src">
+                      </a>
                     </el-form-item> 
                 </el-col>  
                  <el-col :span="12">  
                     <el-form-item label="衬片钻小孔" > 
+                      <a :href="form.process2PictureName_src" target="_blank">
                         <img :src="form.process2PictureName_src"> 
+                      </a>
                     </el-form-item> 
                 </el-col>  
              </el-row> 
              <el-row> 
                  <el-col :span="12">  
                     <el-form-item label="移印喷码" > 
+                      <a :href="form.process3PictureName_src" target="_blank">
                         <img :src="form.process3PictureName_src"> 
+                       </a>
                     </el-form-item> 
                 </el-col>  
                  <el-col :span="12">  
                     <el-form-item label="包装" > 
+                      <a :href="form.process4PictureName_src" target="_blank">
                         <img :src="form.process4PictureName_src">  
+                      </a>
                     </el-form-item> 
                 </el-col>  
              </el-row> 
@@ -337,6 +323,9 @@ export default {
   },
   created() {
     this.getList();
+
+    // 获取配置里面的公共api 用来做图片的显示。 
+    this.baseUrl = process.env.BASE_API;    
   },
   computed: {
     ...mapGetters([
@@ -365,25 +354,25 @@ export default {
           // console.log(response);
           this.form = response.data;
 
-          if(this.form.process1PictureName == null){
+          if(this.form.process1PictureId ==  "" || this.form.process1PictureId == null){
               this.form.process1PictureName_src = defaultImg
             }else{
-              this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version; 
+              this.form.process1PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/1/'+this.form.version+"/"+this.form.process1PictureId; 
             }
-            if(this.form.process2PictureName == null){
+            if(this.form.process2PictureId ==  "" || this.form.process2PictureId == null){
               this.form.process2PictureName_src = defaultImg
             }else{
-              this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version; 
+              this.form.process2PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/2/'+this.form.version+"/"+this.form.process2PictureId; 
             }
-            if(this.form.process3PictureName == null){
+            if(this.form.process3PictureId ==  "" || this.form.process3PictureId == null){
               this.form.process3PictureName_src = defaultImg
             }else{
-            this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version; 
+            this.form.process3PictureName_src =  this.baseUrl+'/api/product/process/photo/'+this.form.id+'/3/'+this.form.version+"/"+this.form.process3PictureId; 
             }
-            if(this.form.process4PictureName == null){
+            if(this.form.process4PictureId ==  "" || this.form.process4PictureId == null){
               this.form.process4PictureName_src = defaultImg
             }else{              
-            this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version;
+            this.form.process4PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/4/'+this.form.version+"/"+this.form.process4PictureId;
             }    
         })
     },
@@ -452,6 +441,8 @@ export default {
 }
 .info .max_span span{
   width: 450px;
+  min-height: 38px;
+  height:auto;
 }
 .info .maxspan{
   display: inline-block;

@@ -18,15 +18,15 @@ export function query(query) {
 // 明细
 export function getObj(id) {
   return fetch({
-    url: ' /api/product/process/getProcess/'+id,
+    url: '/api/product/process/getProcess/'+id,
     method: 'get'
   })
-}
+} 
 
 // 删除上传图片
-export function deluploadObj(id) {
+export function deluploadObj(id,processId,type) {
   return fetch({
-    url: ' /api/product/process/photo/'+ id,
+    url: '/api/product/process/photo/'+ id+'/'+processId+'/'+type,
     method: 'delete', 
   })
 }

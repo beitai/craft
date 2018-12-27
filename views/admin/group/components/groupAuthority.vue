@@ -101,8 +101,8 @@ export default {
     getList() {
       fetchTree(this.listQuery).then(data => {
         this.list = data;
-        console.log("表单的数据");
-        console.log(this.list);
+        // console.log("表单的数据");
+        // console.log(this.list);
 
         // this.data=res.data;
         //           for(var i=0;i<this.data.length;i++){//遍历选择的内容

@@ -15,28 +15,22 @@
       <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50">
           </el-table-column>
-          <el-table-column align="center" label="U9产品编码" width="200" > <template scope="scope" >
+           <el-table-column align="center" label="U9产品编码" min-width="20%" > <template scope="scope" >
                 <span  @click="info(scope.row)" style="cursor:pointer;">{{scope.row.u9Coding}}</span>
               </template> </el-table-column>
-          <el-table-column  align="center" label="产品型号" width="150"> <template scope="scope">
+          <el-table-column  align="center" label="产品型号" min-width="20%"> <template scope="scope">
               <span>{{scope.row.productModel}}</span>
             </template> </el-table-column>
-          <el-table-column  align="center" label="客户" width="80"> <template scope="scope">
+          <el-table-column  align="center" label="客户" min-width="15%"> <template scope="scope">
                   <span>{{scope.row.customer}}</span>
                 </template> </el-table-column>
-          <el-table-column  align="center" label="版本" width="80"> <template scope="scope">
+          <el-table-column  align="center" label="版本" min-width="15%"> <template scope="scope">
                   <span>{{scope.row.version}}</span>
                 </template> </el-table-column> 
-          <el-table-column  align="center" label="文件编码" width="200"> <template scope="scope">
+          <el-table-column  align="center" label="文件编码" min-width="20%"> <template scope="scope">
                   <span>{{scope.row.fileCoding}}</span>
-                </template> </el-table-column>
-          <el-table-column  align="center" label="盒号" width="200"> <template scope="scope">
-                <span>{{scope.row.boxNumber}}</span>
-              </template> </el-table-column>
-          <el-table-column  align="center" label="箱号" width="200"> <template scope="scope">
-                  <span>{{scope.row.caseNumber}}</span>
-                </template> </el-table-column>
-        <el-table-column align="center" width="150" label="操作" fixed="right"> <template scope="scope"> 
+                </template> </el-table-column> 
+        <el-table-column align="center" min-width="15%" label="操作" fixed="right"> <template scope="scope"> 
             <el-button v-if=" maintainManager_uploadView" size="small" type="info" @click="handupload(scope.row)">上传
             </el-button> 
             <el-button size="small" type="info" @click="info(scope.row)">明细
@@ -93,7 +87,7 @@
             <el-form-item label="移印" prop="region" >
                   <span v-html="form.moveSeal"></span>      
             </el-form-item> 
-            <el-form-item label="汽泡带" prop="region" >
+            <el-form-item label="汽泡袋" prop="region" >
                   <span v-html="form.bubbleWith"></span>       
             </el-form-item> 
             <el-form-item label="产品POF过塑" prop="region" >
@@ -103,7 +97,7 @@
             
             <el-row> 
             <el-form-item label="纸筒" prop="region" >
-                <span v-html="form.PaperTube"></span>       
+                <span v-html="form.paperTube"></span>       
             </el-form-item>
             <el-form-item label="箱过塑" prop="region" >
                 <span v-html="form.casePlastic"></span>        
@@ -183,16 +177,19 @@
             </el-form-item>
             </el-row>  
             
-            <el-row class="max_span">
+             <el-row>
               <el-form-item label="子件料号" >
-                  <span  v-html="form.childThingNumber"></span>   
-              </el-form-item>
-              <el-form-item label="备注" >
-                  <span v-html="form.remark"></span>  
+                   <el-input type="textarea" class="maxspan" v-model="form.childThingNumber" readonly></el-input>
               </el-form-item>
             </el-row>  
+            
+            <el-row>
+              <el-form-item label="备注" > 
+                   <el-input type="textarea" class="maxspan" v-model="form.remark" readonly></el-input>
+              </el-form-item>
+            </el-row>
 
-            <template v-if="Status=='info' ">
+            <template v-if="Status=='info' && maintainManager_uploadView">
               <el-row class="max_span"> 
                 <el-form-item label="创建人" >
                     <span v-html="form.crtName"></span>   
@@ -211,30 +208,38 @@
              </el-row> 
             </template>
             
-             <el-row> 
+              <el-row> 
                  <el-col :span="12">  
                     <el-form-item label="打商标" >  
+                      <a :href="form.process1PictureName_src" target="_blank">
                         <img :src="form.process1PictureName_src">
+                      </a>
                     </el-form-item> 
                 </el-col>  
                  <el-col :span="12">  
                     <el-form-item label="衬片钻小孔" > 
+                      <a :href="form.process2PictureName_src" target="_blank">
                         <img :src="form.process2PictureName_src"> 
+                      </a>
                     </el-form-item> 
                 </el-col>  
              </el-row> 
              <el-row> 
                  <el-col :span="12">  
                     <el-form-item label="移印喷码" > 
+                      <a :href="form.process3PictureName_src" target="_blank">
                         <img :src="form.process3PictureName_src"> 
+                       </a>
                     </el-form-item> 
                 </el-col>  
                  <el-col :span="12">  
                     <el-form-item label="包装" > 
+                      <a :href="form.process4PictureName_src" target="_blank">
                         <img :src="form.process4PictureName_src">  
+                      </a>
                     </el-form-item> 
                 </el-col>  
-             </el-row> 
+             </el-row>  
         </el-form> 
       </el-tab-pane> 
     </el-tabs>
@@ -247,22 +252,22 @@
             <el-form-item label="打商标" class="max_list">
                 <el-input   placeholder="点击按钮开始上传" v-model="form.process1PictureName" readonly ></el-input>
                 <el-button  size="small" type="info" @click="upload('1')">开始上传</el-button> 
-                <el-button  v-if="form.process1PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process1PictureId,'1')">删除</el-button> 
+                <el-button  v-if="form.process1PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process1PictureId,form.id,'1')">删除</el-button> 
               </el-form-item> 
               <el-form-item  label="钻小孔" class="max_list">
                 <el-input   placeholder="点击按钮开始上传" v-model="form.process2PictureName" readonly ></el-input>
                 <el-button  size="small" type="info"  @click="upload('2')">开始上传</el-button> 
-                <el-button  v-if="form.process2PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process2PictureId,'2')">删除</el-button> 
+                <el-button  v-if="form.process2PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process2PictureId,form.id,'2')">删除</el-button> 
               </el-form-item>
               <el-form-item label="移印喷码" class="max_list">
                 <el-input  placeholder="点击按钮开始上传"  v-model="form.process3PictureName" readonly></el-input>
                 <el-button  size="small" type="info"   @click="upload('3')">开始上传</el-button> 
-                <el-button  v-if="form.process3PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process3PictureId,'3')">删除</el-button> 
+                <el-button  v-if="form.process3PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process3PictureId,form.id,'3')">删除</el-button> 
               </el-form-item>
               <el-form-item label="包装" class="max_list">
                 <el-input  placeholder="点击按钮开始上传"   v-model="form.process4PictureName" readonly ></el-input>
                 <el-button  size="small" type="info" @click="upload('4')">开始上传</el-button> 
-                <el-button  v-if="form.process4PictureName!=null" size="small" type="danger" @click="deleteUpload(form.process4PictureId,'4')">删除</el-button> 
+                <el-button  v-if="form.process4PictureName!=null" size="small" type="danger" @click="deleteUpload(form.process4PictureId,form.id,'4')">删除</el-button> 
               </el-form-item> 
             </el-form>
         </el-tab-pane> 
@@ -381,6 +386,9 @@ export default {
     this.getList(); 
 
     this.maintainManager_uploadView  = this.elements['uploadManager'];
+
+    // 获取配置里面的公共api 用来做图片的显示。 
+    this.baseUrl = process.env.BASE_API;    
   },
   computed: {
     ...mapGetters([
@@ -408,25 +416,25 @@ export default {
         .then(response => { 
           this.form = response.data;
           
-           if(this.form.process1PictureName == null){
+           if(this.form.process1PictureId == "" || this.form.process1PictureId == null){
               this.form.process1PictureName_src = defaultImg
             }else{
-              this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version; 
+              this.form.process1PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/1/'+this.form.version+"/"+this.form.process1PictureId; 
             }
-            if(this.form.process2PictureName == null){
+            if(this.form.process2PictureId == "" || this.form.process2PictureId == null){
               this.form.process2PictureName_src = defaultImg
             }else{
-              this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version; 
+              this.form.process2PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/2/'+this.form.version+"/"+this.form.process2PictureId; 
             }
-            if(this.form.process3PictureName == null){
+            if(this.form.process3PictureId == "" || this.form.process3PictureId == null){
               this.form.process3PictureName_src = defaultImg
             }else{
-            this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version; 
+              this.form.process3PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/3/'+this.form.version+"/"+this.form.process3PictureId; 
             }
-            if(this.form.process4PictureName == null){
+            if(this.form.process4PictureId == "" || this.form.process4PictureId == null){
               this.form.process4PictureName_src = defaultImg
             }else{              
-            this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version;
+              this.form.process4PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/4/'+this.form.version+"/"+this.form.process4PictureId;
             }       
         })
     },
@@ -481,17 +489,21 @@ export default {
 
       var type = response.type  
       if(type=='1'){
-        this.form.process1PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/1/'+this.form.version+"?time="+data; 
-        this.form.process1PictureName = response.path
+        this.form.process1PictureId  = response.id; 
+        this.form.process1PictureName_src = 'http://123.56.2.28:8011/api/product/process/photo/'+this.form.id+'/1/'+this.form.version+"/"+this.form.process1PictureId+"?time="+data; 
+        this.form.process1PictureName = response.path;
       }else if(type=='2'){
-        this.form.process2PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/2/'+this.form.version+"?time="+data; 
-        this.form.process2PictureName = response.path
+        this.form.process2PictureId  = response.id; 
+        this.form.process2PictureName_src = 'http://123.56.2.28:8011/api/product/process/photo/'+this.form.id+'/2/'+this.form.version+"/"+this.form.process2PictureId+"?time="+data; 
+        this.form.process2PictureName = response.path;
       }else if(type=='3'){
-        this.form.process3PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/3/'+this.form.version+"?time="+data; 
-        this.form.process3PictureName = response.path
+        this.form.process3PictureId  = response.id; 
+        this.form.process3PictureName_src = 'http://123.56.2.28:8011/api/product/process/photo/'+this.form.id+'/3/'+this.form.version+"/"+this.form.process3PictureId+"?time="+data; 
+        this.form.process3PictureName = response.path;
       }else{
-        this.form.process4PictureName_src = 'http://123.56.2.28:8765/api/product/process/photo/'+this.form.id+'/4/'+this.form.version+"?time="+data;
-        this.form.process4PictureName = response.path
+        this.form.process4PictureId  = response.id; 
+        this.form.process4PictureName_src = 'http://123.56.2.28:8011/api/product/process/photo/'+this.form.id+'/4/'+this.form.version+"/"+this.form.process4PictureId+"?time="+data;
+        this.form.process4PictureName = response.path;
       }
       // console.log('添加成功');
       // console.log(this.form); 
@@ -502,14 +514,14 @@ export default {
           duration: 2000
         });  
    },
-    deleteUpload(id,type) {
-      console.log(id);
+    deleteUpload(id,processId,type) {
+      // console.log(id);
       this.$confirm("此操作将永久删除此图片, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        deluploadObj(id).then(() => {
+        deluploadObj(id,processId,type).then(() => {
           this.$notify({
             title: "成功",
             message: "删除成功",
@@ -538,17 +550,7 @@ export default {
 
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-// .el-tabs{
-//     .el-form-item{
-//       width:45%;
-//     }
-//     .max_list{ 
-//       width: 97%;
-//     } 
-//     .el-input,.el-select { 
-//       width: 400px !important;
-//     }
-// }
+
 .list{
   position: absolute;
   right:20px;
@@ -570,6 +572,8 @@ export default {
 }
 .info .max_span span{
   width: 450px;
+  min-height: 38px;
+  height:auto;
 }
 .info .maxspan{
   display: inline-block;
@@ -584,13 +588,14 @@ export default {
   margin: 0 100px;
 }
 
-.info img{
-  width: 300px;
-  height: 170px;
-  margin: 0 100px;
-} 
+.el-tabs{ 
+    .el-input,.el-select { 
+      width: 400px !important;
+    }
+}
 .upload .el-button{
     min-width: 200px; 
     height:38px;
 }
+
 </style>

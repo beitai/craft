@@ -10,7 +10,7 @@ import {
 
 // 创建axios实例
 const service = axios.create({
-  // baseURL: process.env.BASE_API, // api的base_url
+  // baseURL: process.env.BASE_API, // api的base_url 
   timeout: 5000 // 请求超时时间
 });
 
@@ -26,6 +26,9 @@ service.interceptors.request.use(config => {
   console.log(error); // for debug
   Promise.reject(error);
 })
+
+// console.log('测试');
+// console.log(process.env.BASE_API);
 
 // respone拦截器
 service.interceptors.response.use(
@@ -68,10 +71,8 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       });
-    } else {
-      // console.log('12312321');
-      // console.log(response);
-      return response.data; 
+    } else { 
+      return response.data;
     }
   },
   error => {

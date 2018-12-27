@@ -50,7 +50,7 @@ export default {
         username: '',
         password: '',
         code: '',
-        yzm:'http://123.56.2.28:8765/api/auth/jwt/getcode', 
+        yzm:'', 
       },
       loginRules: {
         username: [{
@@ -81,7 +81,7 @@ export default {
   }, 
   methods: { 
     yzmRefresh() { 
-      this.loginForm.yzm  = 'http://123.56.2.28:8765/api/auth/jwt/getcode?t='+new Date().getTime();
+      this.loginForm.yzm  = this.baseUrl+'/api/auth/jwt/getcode?t='+new Date().getTime();
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
@@ -126,7 +126,7 @@ export default {
           //   return false;
           // });
         } else {
-          console.log('error submit!!');
+          // console.log('error submit!!');
           return false;
         }
       });
@@ -152,6 +152,11 @@ export default {
   },
   created() {
     // window.addEventListener('hashchange', this.afterQRScan);  
+    
+    // 获取配置里面的公共api 用来做图片的显示。 
+    this.baseUrl = process.env.YZM_API;   
+    // 初始化验证码
+    this.loginForm.yzm = this.baseUrl+'/api/auth/jwt/getcode'; 
   },
   destroyed() {
     // window.removeEventListener('hashchange', this.afterQRScan);

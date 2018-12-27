@@ -1,5 +1,5 @@
 import fetch from 'utils/fetch';
-
+// 分页查询
 export function page(query) {
   return fetch({
     url: '/api/product/process/maxVersion/page',
@@ -63,7 +63,7 @@ export function getObj(id) {
 // 明细
 export function info(id) {
   return fetch({
-    url: ' /api/product/process/getProcess/'+id,
+    url: '/api/product/process/getProcess/'+id,
     method: 'get'
   })
 }
@@ -79,31 +79,46 @@ export function restore(id) {
 // 导入
 export function importObj(Obj) {
   return fetch({
-    url: ' /api/product/process/excelInport',
-    method: 'post',
-    data: Obj
-  })
-}
-// 下載
-export function downloadObj() {
-  return fetch({
-    url: ' /api/product/process/ftpDownload',
-    method: 'get' 
-  })
-}
-// 上传
-export function uploadObj(Obj) {
-  return fetch({
-    url: ' /api/product/process/ftpUploadImg',
+    url: '/api/product/process/excelInport',
     method: 'post',
     data: Obj
   })
 }
 
-// 删除上传图片
-export function deluploadObj(id) {
+// 导出
+export function exportObj(u9Coding,customer,status) {
   return fetch({
-    url: ' /api/product/process/photo/'+ id,
+    url: '/api/product/process/photo/export',
+    method: 'get',
+    // params:Obj
+    params: {
+      u9Coding:u9Coding,
+      customer:customer,
+      status:status
+    }
+  })
+}
+
+// 下載
+export function downloadObj() {
+  return fetch({
+    url: '/api/product/process/ftpDownload',
+    method: 'get' 
+  })
+}
+// 上传 没用到
+// export function uploadObj(Obj) {
+//   return fetch({
+//     url: ' /api/product/process/ftpUploadImg',
+//     method: 'post',
+//     data: Obj
+//   })
+// }
+
+// 删除上传图片
+export function deluploadObj(id,processId,type) {
+  return fetch({
+    url: '/api/product/process/photo/'+ id+'/'+processId+'/'+type,
     method: 'delete', 
   })
 }

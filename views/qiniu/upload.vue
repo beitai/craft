@@ -29,7 +29,7 @@
             _self._data.dataObj.key = key;
             resolve(true);
           }).catch(err => {
-            console.log(err)
+            // console.log(err)
             reject(false)
           });
         });
