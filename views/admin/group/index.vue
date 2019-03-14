@@ -2,7 +2,7 @@
 <div class="app-container calendar-list-container">
    <template v-if="displayState=='list'">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="姓名或账户" v-model="listQuery.name"> </el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="角色名称" v-model="listQuery.name"> </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="edit">添加</el-button>
     </div>
@@ -66,12 +66,12 @@
     <el-table :key='tableKey' :data="lItems" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%"  @selection-change="handleSelectionChange">
       <el-table-column type="selection" >
       </el-table-column>
-      <el-table-column  align="center" label="用户账号"> <template scope="scope"> 
-          <span>{{scope.row.username}}</span>
-        </template> </el-table-column>
-      <el-table-column  align="center" label="用户名"> <template scope="scope">
+      <el-table-column  align="center" label="姓名"> <template scope="scope">
               <span>{{scope.row.name}}</span>
             </template> </el-table-column>
+      <el-table-column  align="center" label="登录账户"> <template scope="scope"> 
+          <span>{{scope.row.username}}</span>
+        </template> </el-table-column>
       <el-table-column  align="center" label="联系电话"> <template scope="scope">
               <span>{{scope.row.telPhone}}</span>
             </template> </el-table-column> 
@@ -88,11 +88,11 @@
     <el-dialog title="分配用户" :visible.sync="dialogFormVisible1">   
       <el-form :model="form1"   :rules="rules" ref="form1" label-width="100px"> 
         <el-form-item label="姓名" prop="leaders">
-            <el-select v-model="form1.leaders"  clearable filterable  remote  placeholder="用户名" style="width: 100%;" class="filter-item"> 
+            <el-select v-model="form1.leaders"  clearable filterable  remote  placeholder="姓名(登录账户)" style="width: 100%;" class="filter-item"> 
                       <el-option
                         v-for="item in Items"
                         :key="item.id"
-                        :label="item.name"
+                        :label="item.name+'('+item.userName+')'"
                         :value="item.id">
                       </el-option>
             </el-select>  
@@ -128,7 +128,7 @@ import {
 export default {
   name: "group",
    components: {
-    'group-user': () => import('./components/groupUser'),
+    // 'group-user': () => import('./components/groupUser'),
     'group-authority': () => import('./components/groupAuthority')
   },
   data() {
@@ -277,8 +277,8 @@ export default {
       });
     },
     create(formName) {
-      console.log("测试");
-      console.log(this.form);
+      // console.log("测试");
+      // console.log(this.form);
       this.$refs[formName].validate(valid => {
         if (valid) {
           addObj(this.form).then(() => {
@@ -384,8 +384,8 @@ export default {
         // this.leaders = leas;
         this.listLoading = false;
         
-        console.log("获取已有的用户。");
-        console.log(this.lItems);
+        // console.log("获取已有的用户。");
+        // console.log(this.lItems);
         // console.log(this.mItems);
       });
     },
@@ -403,9 +403,9 @@ export default {
       this.dialogFormVisible1 = false; 
     },
     createUser(formName) {
-      console.log('添加')
-      console.log(this.groupId);
-      console.log(this.form1); 
+      // console.log('添加')
+      // console.log(this.groupId);
+      // console.log(this.form1); 
       
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -427,8 +427,8 @@ export default {
     handleDeleteUser(row){
       this.delpro.id = row.id 
       this.del.list.push(this.delpro);
-      console.log('删除。。');
-      console.log(this.del);
+      // console.log('删除。。');
+      // console.log(this.del);
       this.$confirm("此操作将删除该用户授权, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -460,6 +460,14 @@ export default {
         // console.log('批量删除');
         // console.log(this.del);
         var list = this.del.list
+        if (this.del.list.length == 0) {
+        this.$notify({
+          title: "操作失败",
+          message: "请选择数据",
+          type: "warning",
+          duration: 2000
+        });
+      } else {
         this.$confirm('此操作将删除选中的用户授权, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -477,6 +485,7 @@ export default {
               this.initUsers();
               });
           });
+      }
     },
     handleSizeChange1(val) {
       this.listQuery1.limit = val;

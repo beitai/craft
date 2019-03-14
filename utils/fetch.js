@@ -7,10 +7,11 @@ import store from '../store';
 import {
   getToken
 } from 'utils/auth';
+axios.default.withCredentials=true;
 
 // 创建axios实例
 const service = axios.create({
-  // baseURL: process.env.BASE_API, // api的base_url 
+  baseURL: ApiUrl, // api的base_url  正式环境打包的时候把api 进行替换 
   timeout: 5000 // 请求超时时间
 });
 
@@ -26,9 +27,6 @@ service.interceptors.request.use(config => {
   console.log(error); // for debug
   Promise.reject(error);
 })
-
-// console.log('测试');
-// console.log(process.env.BASE_API);
 
 // respone拦截器
 service.interceptors.response.use(
@@ -65,7 +63,7 @@ service.interceptors.response.use(
       });
       return Promise.reject('error');
     }
-    if (response.status !== 200 && res.status !== 200) { 
+    if (response.status !== 200 && res.status !== 200) {  
       Message({
         message: res.message,
         type: 'error',

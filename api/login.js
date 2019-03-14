@@ -1,11 +1,11 @@
 import fetch from 'utils/fetch';
 
-export function loginByEmail(username,password,code) { 
+export function loginByEmail(username, password, code) {
   const data = {
-    username, 
+    username,
     password,
     code,
-  }; 
+  };
   return fetch({
     url: '/api/auth/jwt/token',
     method: 'post',
@@ -26,6 +26,9 @@ export function getInfo(token) {
     url: '/api/admin/user/front/info',
     method: 'get',
     params: { token }
+    // Headers: {
+    //   Authorization: token
+    // }
   });
 }
 
@@ -33,7 +36,7 @@ export function getMenus(token) {
   return fetch({
     url: '/api/admin/user/front/menus',
     method: 'get',
-    params: { token }
+    params: { token } 
   });
 }
 

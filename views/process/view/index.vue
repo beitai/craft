@@ -1,15 +1,13 @@
 <template>
 <div class="app-container calendar-list-container">
   <div class="filter-container"> 
-    <template  v-if="Status=='list'">  
-      <el-select v-model="listQuery.u9Coding"  clearable filterable  remote :remote-method="selevtValue"  placeholder="U9产品编码" style="width: 200px;" class="filter-item"> 
-              <el-option
-                v-for="item in Items"
-                :key="item.u9Coding"
-                :label="item.u9Coding+'('+item.productModel+')'"
-                :value="item.u9Coding">
-              </el-option>
-      </el-select>  
+    <template  v-if="Status=='list'"> 
+      <el-autocomplete style="width: 200px;" class="filter-item"
+              v-model="listQuery.u9Coding" 
+              :fetch-suggestions="selectValue"
+              placeholder="U9产品编码"
+              @select="handleSelect"> 
+      </el-autocomplete> 
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="客户" v-model="listQuery.customer"> </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%" @selection-change="handleSelectionChange">
@@ -84,10 +82,10 @@
             </el-row> 
             
             <el-row> 
-            <el-form-item label="移印" prop="region" >
+            <el-form-item label="移印/喷印" prop="region" >
                   <span v-html="form.moveSeal"></span>      
             </el-form-item> 
-            <el-form-item label="汽泡袋" prop="region" >
+            <el-form-item label="包装袋" prop="region" >
                   <span v-html="form.bubbleWith"></span>       
             </el-form-item> 
             <el-form-item label="产品POF过塑" prop="region" >
@@ -119,6 +117,21 @@
               </el-form-item>
               <el-form-item label="数量" >
                   <span v-html="form.box2Num"></span>    
+              </el-form-item>
+            </el-row> 
+
+            <el-row class="min_span">  
+              <el-form-item label="盒标签3" >
+                  <span v-html="form.box3Label"></span>  
+              </el-form-item>
+              <el-form-item label="数量" >
+                  <span v-html="form.box3Num"></span>   
+              </el-form-item>
+              <el-form-item label="盒标签4" >
+                  <span v-html="form.box4Label"></span>    
+              </el-form-item>
+              <el-form-item label="数量" >
+                  <span v-html="form.box4Num"></span>    
               </el-form-item>
             </el-row> 
             
@@ -162,8 +175,7 @@
             </el-row>  
             
             <el-row class="max_list">
-            <el-form-item label="面料/底料" >
-                <!-- <span class="maxspan" v-html="form.shellFabric+'/'+form.bedCharge"></span>   -->
+            <el-form-item label="配方" > 
                 <span class="maxspan" v-html="form.bedCharge"></span>  
             </el-form-item>
             </el-row>  
@@ -177,15 +189,21 @@
             </el-form-item>
             </el-row>  
             
-             <el-row>
+            <el-row>
               <el-form-item label="子件料号" >
-                   <el-input type="textarea" class="maxspan" v-model="form.childThingNumber" readonly></el-input>
+                  <span class="maxspan" v-html="form.childThingNumber"></span>    
               </el-form-item>
             </el-row>  
             
+            <el-row >
+              <el-form-item label="隔板" >  
+                  <span class="maxspan" v-html="form.clapboard"></span>  
+              </el-form-item>
+            </el-row>
+
             <el-row>
               <el-form-item label="备注" > 
-                   <el-input type="textarea" class="maxspan" v-model="form.remark" readonly></el-input>
+                  <span class="maxspan" v-html="form.remark"></span>   
               </el-form-item>
             </el-row>
 
@@ -211,14 +229,14 @@
               <el-row> 
                  <el-col :span="12">  
                     <el-form-item label="打商标" >  
-                      <a :href="form.process1PictureName_src" target="_blank">
+                      <a :href="form.process1PictureHref" target="_blank">
                         <img :src="form.process1PictureName_src">
                       </a>
                     </el-form-item> 
                 </el-col>  
                  <el-col :span="12">  
                     <el-form-item label="衬片钻小孔" > 
-                      <a :href="form.process2PictureName_src" target="_blank">
+                      <a :href="form.process2PictureHref" target="_blank">
                         <img :src="form.process2PictureName_src"> 
                       </a>
                     </el-form-item> 
@@ -227,14 +245,14 @@
              <el-row> 
                  <el-col :span="12">  
                     <el-form-item label="移印喷码" > 
-                      <a :href="form.process3PictureName_src" target="_blank">
+                      <a :href="form.process3PictureHref" target="_blank">
                         <img :src="form.process3PictureName_src"> 
                        </a>
                     </el-form-item> 
                 </el-col>  
                  <el-col :span="12">  
                     <el-form-item label="包装" > 
-                      <a :href="form.process4PictureName_src" target="_blank">
+                      <a :href="form.process4PictureHref" target="_blank">
                         <img :src="form.process4PictureName_src">  
                       </a>
                     </el-form-item> 
@@ -250,24 +268,24 @@
           <el-tab-pane  label="工艺图纸上传" name="first" >   
             <el-form :model="form"  :rules="rules" ref="form" label-width="100px"  class="upload" > 
             <el-form-item label="打商标" class="max_list">
-                <el-input   placeholder="点击按钮开始上传" v-model="form.process1PictureName" readonly ></el-input>
+                <el-input   placeholder="点击按钮开始上传" v-model="form.process1PicturePath" readonly ></el-input>
                 <el-button  size="small" type="info" @click="upload('1')">开始上传</el-button> 
-                <el-button  v-if="form.process1PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process1PictureId,form.id,'1')">删除</el-button> 
+                <el-button  v-if="form.process1PicturePath!='' && form.process1PicturePath!=null"  size="small" type="danger" @click="deleteUpload(form.id,'1')">删除</el-button> 
               </el-form-item> 
               <el-form-item  label="钻小孔" class="max_list">
-                <el-input   placeholder="点击按钮开始上传" v-model="form.process2PictureName" readonly ></el-input>
+                <el-input   placeholder="点击按钮开始上传" v-model="form.process2PicturePath" readonly ></el-input>
                 <el-button  size="small" type="info"  @click="upload('2')">开始上传</el-button> 
-                <el-button  v-if="form.process2PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process2PictureId,form.id,'2')">删除</el-button> 
+                <el-button  v-if="form.process2PicturePath!='' && form.process2PicturePath!=null"  size="small" type="danger" @click="deleteUpload(form.id,'2')">删除</el-button> 
               </el-form-item>
               <el-form-item label="移印喷码" class="max_list">
-                <el-input  placeholder="点击按钮开始上传"  v-model="form.process3PictureName" readonly></el-input>
+                <el-input  placeholder="点击按钮开始上传"  v-model="form.process3PicturePath" readonly></el-input>
                 <el-button  size="small" type="info"   @click="upload('3')">开始上传</el-button> 
-                <el-button  v-if="form.process3PictureName!=null"  size="small" type="danger" @click="deleteUpload(form.process3PictureId,form.id,'3')">删除</el-button> 
+                <el-button  v-if="form.process3PicturePath!='' && form.process3PicturePath!=null"  size="small" type="danger" @click="deleteUpload(form.id,'3')">删除</el-button> 
               </el-form-item>
               <el-form-item label="包装" class="max_list">
-                <el-input  placeholder="点击按钮开始上传"   v-model="form.process4PictureName" readonly ></el-input>
+                <el-input  placeholder="点击按钮开始上传"   v-model="form.process4PicturePath" readonly ></el-input>
                 <el-button  size="small" type="info" @click="upload('4')">开始上传</el-button> 
-                <el-button  v-if="form.process4PictureName!=null" size="small" type="danger" @click="deleteUpload(form.process4PictureId,form.id,'4')">删除</el-button> 
+                <el-button  v-if="form.process4PicturePath!='' && form.process4PicturePath!=null" size="small" type="danger" @click="deleteUpload(form.id,'4')">删除</el-button> 
               </el-form-item> 
             </el-form>
         </el-tab-pane> 
@@ -278,11 +296,12 @@
         <el-upload
             class="upload-demo" drag
             :show-file-list="false"
-            :action="'/api/product/process/ftpUploadImg/'+form.id+'/'+form.type"
-            :on-success	= "uploadSubcess">
+            :action="baseUrl+'/api/product/process/ftpUploadImg/'+form.id+'/'+form.type"
+            :on-success	= "uploadSubcess"
+            :on-error = "uploadError">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件</div>
           </el-upload>  
      </el-dialog> 
 </div>
@@ -295,29 +314,33 @@ import {
   getObj,
   delObj,
   putObj,
-  query,  
-  deluploadObj
-} from 'api/process/view/index';
-import defaultImg from 'assets/images/defaultImg.png';
-import { mapGetters } from 'vuex';
+  query,
+  deluploadObj,
+  pic
+} from "api/process/view/index";
+import defaultImg from "assets/images/defaultImg.png";
+import { mapGetters } from "vuex";
 export default {
-  name: 'user',
+  name: "user",
   data() {
-    return {  
-      activeName:'first',
-      activeName1: "first",  
-      staticOptions: [{
-        value:'1',
-        label:'有效'
-      },{
-        value:'0',
-        label:'作废'
-      }],
-      Items:undefined,
+    return {
+      activeName: "first",
+      activeName1: "first",
+      staticOptions: [
+        {
+          value: "1",
+          label: "有效"
+        },
+        {
+          value: "0",
+          label: "作废"
+        }
+      ],
+      Items: undefined,
       form: {
         username: undefined,
         name: undefined,
-        sex: '男',
+        sex: "男",
         password: undefined,
         description: undefined
       },
@@ -325,40 +348,40 @@ export default {
         name: [
           {
             required: true,
-            message: '请输入用户',
-            trigger: 'blur'
+            message: "请输入用户",
+            trigger: "blur"
           },
           {
             min: 3,
             max: 20,
-            message: '长度在 3 到 20 个字符',
-            trigger: 'blur'
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur"
           }
         ],
         username: [
           {
             required: true,
-            message: '请输入账户',
-            trigger: 'blur'
+            message: "请输入账户",
+            trigger: "blur"
           },
           {
             min: 3,
             max: 20,
-            message: '长度在 3 到 20 个字符',
-            trigger: 'blur'
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur"
           }
         ],
         password: [
           {
             required: true,
-            message: '请输入密码',
-            trigger: 'blur'
+            message: "请输入密码",
+            trigger: "blur"
           },
           {
             min: 5,
             max: 20,
-            message: '长度在 5 到 20 个字符',
-            trigger: 'blur'
+            message: "长度在 5 到 20 个字符",
+            trigger: "blur"
           }
         ]
       },
@@ -369,79 +392,77 @@ export default {
         page: 1,
         limit: 10,
         status: 1,
-        u9Coding:''
+        u9Coding: ""
+      },
+      u9listQuery: {
+        u9Coding: "",
+        page: 1,
+        limit: 30
       },
       dialogFormVisible: false,
-      dialogFormVisible_upload:false,
-      dialogStatus:false,
-      Status: '', 
+      dialogFormVisible_upload: false,
+      dialogStatus: false,
+      Status: "",
       textMap: {
-        update: '编辑',
-        create: '创建'
+        update: "编辑",
+        create: "创建"
       },
-      tableKey: 0
-    }
+      tableKey: 0,
+      maintainManager_uploadView: null,
+      baseUrl: null
+    };
   },
   created() {
-    this.getList(); 
-
-    this.maintainManager_uploadView  = this.elements['uploadManager'];
-
-    // 获取配置里面的公共api 用来做图片的显示。 
-    this.baseUrl = process.env.BASE_API;    
+    this.getList();
+    if (this.elements != undefined) {
+      this.maintainManager_uploadView = this.elements["uploadManager"];
+    }
+    // 获取配置里面的公共api 用来做图片的显示。
+    this.baseUrl = ApiUrl;
   },
   computed: {
-    ...mapGetters([
-      'elements'
-    ])
+    ...mapGetters(["elements"])
   },
   methods: {
     getList() {
-      this.Status = 'list';
+      this.Status = "list";
       this.listLoading = true;
-      page(this.listQuery)
-        .then(response => {
-          // console.log(response);
-          this.list = response.data.rows;
-          this.total = response.data.total;
-          this.listLoading = false;
-        })
-      query().then(response => {
-          this.Items = response.data.dataList; 
-        });
+      page(this.listQuery).then(response => {
+        this.list = response.data.rows;
+        this.total = response.data.total;
+        this.listLoading = false;
+      });
     },
     info(row) {
-          this.Status = 'info';
-      getObj(row.id)
-        .then(response => { 
-          this.form = response.data;
-          
-           if(this.form.process1PictureId == "" || this.form.process1PictureId == null){
-              this.form.process1PictureName_src = defaultImg
-            }else{
-              this.form.process1PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/1/'+this.form.version+"/"+this.form.process1PictureId; 
-            }
-            if(this.form.process2PictureId == "" || this.form.process2PictureId == null){
-              this.form.process2PictureName_src = defaultImg
-            }else{
-              this.form.process2PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/2/'+this.form.version+"/"+this.form.process2PictureId; 
-            }
-            if(this.form.process3PictureId == "" || this.form.process3PictureId == null){
-              this.form.process3PictureName_src = defaultImg
-            }else{
-              this.form.process3PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/3/'+this.form.version+"/"+this.form.process3PictureId; 
-            }
-            if(this.form.process4PictureId == "" || this.form.process4PictureId == null){
-              this.form.process4PictureName_src = defaultImg
-            }else{              
-              this.form.process4PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/4/'+this.form.version+"/"+this.form.process4PictureId;
-            }       
-        })
+      this.Status = "info";
+      getObj(row.id).then(response => {
+        this.form = response.data;
+
+        for (var i = 1; i < 5; i++) {
+          this.form["process" + i + "PictureHref"] =
+            this.baseUrl +
+            "/api/product/process/photo/" +
+            this.form.id +
+            "/" +
+            i;
+        }
+        pic(row.id).then(response => {
+          this.form.process1PictureName_src = response.tupian1;
+          this.form.process2PictureName_src = response.tupian2;
+          this.form.process3PictureName_src = response.tupian3;
+          this.form.process4PictureName_src = response.tupian4;
+          if (this.form.remark == null) {
+            this.form.remark = " ";
+          } else {
+            this.form.remark = this.form.remark + " ";
+          }
+        });
+      });
     },
     // 上传按钮事件
-    handupload(row){  
-       this.info(row);
-       this.Status = 'upload';
+    handupload(row) {
+      this.info(row);
+      this.Status = "upload";
     },
     handleFilter() {
       this.getList();
@@ -455,147 +476,162 @@ export default {
       this.getList();
     },
     toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
     },
     handleSelectionChange(val) {
-        this.multipleSelection = val;
+      this.multipleSelection = val;
     },
-    selevtValue(value){
-      if(value != ''){ 
-       query(value).then(response => {  
-          this.Items = response.data.dataList; 
-        }); 
-      }
+    // selectValue(value) {
+    //     this.Items = [];
+    //     this.u9listQuery.page = 1;  //重置页数
+    //     this.u9listQuery.u9Coding = value;
+    //     query(this.u9listQuery).then(response => {
+    //       this.Items = response.data.rows;
+    //     });
+    // },
+    // selectValue0() {
+    //     this.u9listQuery.page++;
+    //     query(this.u9listQuery).then(response => {
+    //       this.Items = this.Items.concat(response.data.rows);
+    //     });
+    // },
+    //  u9coding的模糊查询
+    selectValue(queryString, cb) {
+      this.u9listQuery.page = 1; //重置页数
+      this.u9listQuery.u9Coding = queryString;
+      query(this.u9listQuery).then(response => {
+        var data = response.data.rows;
+        for (var i = 0; i < data.length; i++) {
+          data[i].value = data[i].u9Coding + "(" + data[i].productModel + ")";
+        }
+        cb(data);
+      });
     },
-     // 图片上传的弹出框
-    upload(type){ 
-      this.dialogStatus = 'upload';
+    // 选中重新赋值
+    handleSelect(item) {
+      this.listQuery.u9Coding = item.u9Coding;
+    },
+    // 图片上传的弹出框
+    upload(type) {
+      this.dialogStatus = "upload";
       this.dialogFormVisible_upload = true;
       // 把类型划分为1,2,3,4
-      this.form.type = type; 
-    }, 
-    // 输出上传结果
-    uploadSubcess(response){ 
-      // console.log('上传成功--图片4个接口');
-      // console.log(response);
-      // 时间戳 用来实时更新图片
-      var  data = new Date().getTime();
+      this.form.type = type;
+    },
+    // 输出上传结果 上传成功。
+    uploadSubcess(response) {
+      var data = response.data;
+      var type = this.form.type;
 
-      var type = response.type  
-      if(type=='1'){
-        this.form.process1PictureId  = response.id; 
-        this.form.process1PictureName_src = 'http://123.56.2.28:8011/api/product/process/photo/'+this.form.id+'/1/'+this.form.version+"/"+this.form.process1PictureId+"?time="+data; 
-        this.form.process1PictureName = response.path;
-      }else if(type=='2'){
-        this.form.process2PictureId  = response.id; 
-        this.form.process2PictureName_src = 'http://123.56.2.28:8011/api/product/process/photo/'+this.form.id+'/2/'+this.form.version+"/"+this.form.process2PictureId+"?time="+data; 
-        this.form.process2PictureName = response.path;
-      }else if(type=='3'){
-        this.form.process3PictureId  = response.id; 
-        this.form.process3PictureName_src = 'http://123.56.2.28:8011/api/product/process/photo/'+this.form.id+'/3/'+this.form.version+"/"+this.form.process3PictureId+"?time="+data; 
-        this.form.process3PictureName = response.path;
-      }else{
-        this.form.process4PictureId  = response.id; 
-        this.form.process4PictureName_src = 'http://123.56.2.28:8011/api/product/process/photo/'+this.form.id+'/4/'+this.form.version+"/"+this.form.process4PictureId+"?time="+data;
-        this.form.process4PictureName = response.path;
-      }
-      // console.log('添加成功');
-      // console.log(this.form); 
+      pic(data.id).then(response => {
+        this.form["process" + type + "PictureName_src"] =
+          response["tupian" + type];
+        this.form["process" + type + "PicturePath"] =
+          data["process" + type + "PicturePath"];
+      });
+
       this.$notify({
-          title: "成功",
-          message: "上传成功",
-          type: "success",
-          duration: 2000
-        });  
-   },
-    deleteUpload(id,processId,type) {
-      // console.log(id);
+        title: "成功",
+        message: response.message,
+        type: "success",
+        duration: 2000
+      });
+    },
+      // 上传失败的方H法
+    uploadError() {
+      this.$notify({
+        title: "上传失败",
+        message: "非法操作，上传失败", 
+        type: "warning",
+        duration: 2000
+      });
+    },
+    deleteUpload(processId, type) {
       this.$confirm("此操作将永久删除此图片, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        deluploadObj(id,processId,type).then(() => {
+        deluploadObj(processId, type).then(() => {
           this.$notify({
             title: "成功",
             message: "删除成功",
             type: "success",
             duration: 2000
-          }); 
+          });
         });
-        if(type=='1'){
-          this.form.process1PictureName_src = defaultImg; 
-          this.form.process1PictureName = null
-        }else if(type=='2'){
-          this.form.process2PictureName_src = defaultImg; 
-          this.form.process2PictureName = null
-        }else if(type=='3'){
-          this.form.process3PictureName_src = defaultImg; 
-          this.form.process3PictureName = null
-        }else{
+        if (type == "1") {
+          this.form.process1PictureName_src = defaultImg;
+          this.form.process1PicturePath = null;
+        } else if (type == "2") {
+          this.form.process2PictureName_src = defaultImg;
+          this.form.process2PicturePath = null;
+        } else if (type == "3") {
+          this.form.process3PictureName_src = defaultImg;
+          this.form.process3PicturePath = null;
+        } else {
           this.form.process4PictureName_src = defaultImg;
-          this.form.process4PictureName = null
+          this.form.process4PicturePath = null;
         }
       });
-    }, 
+    }
   }
-}
+};
 </script>
 
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-
-.list{
+.list {
   position: absolute;
-  right:20px;
+  right: 20px;
   z-index: 1;
 }
 
-.info{
-  padding-top:20px;  
-}  
-.info span{
+.info {
+  padding-top: 20px;
+}
+.info span {
   display: inline-block;
   width: 260px;
   height: 38px;
-  text-align: center;  
-  border:1px solid;
+  text-align: center;
+  border: 1px solid;
 }
-.info .min_span span{
+.info .min_span span {
   width: 170px;
 }
-.info .max_span span{
+.info .max_span span {
   width: 450px;
   min-height: 38px;
-  height:auto;
+  height: auto;
 }
-.info .maxspan{
+.info .maxspan {
   display: inline-block;
   width: 1015px;
   // width: 635px;
   // width: 985px;
-  text-align: center; 
+  text-align: center;
 }
-.info img{
+.info img {
   width: 300px;
   height: 170px;
   margin: 0 100px;
 }
 
-.el-tabs{ 
-    .el-input,.el-select { 
-      width: 400px !important;
-    }
+.el-tabs {
+  .el-input,
+  .el-select {
+    width: 400px !important;
+  }
 }
-.upload .el-button{
-    min-width: 200px; 
-    height:38px;
+.upload .el-button {
+  min-width: 200px;
+  height: 38px;
 }
-
 </style>

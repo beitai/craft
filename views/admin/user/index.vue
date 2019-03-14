@@ -253,15 +253,13 @@ export default {
       this.listLoading = true;
       page(this.listQuery)
         .then(response => {
-          // console.log(reponse);
-          // this.print(response);
+          // console.log(reponse); 
           this.list = response.data.rows;
           this.total = response.data.total;
           this.listLoading = false;
         })
     },
-    handleFilter() {
-      this.print(this.listQuery);
+    handleFilter() { 
       this.getList();
     },
     handleSizeChange(val) {

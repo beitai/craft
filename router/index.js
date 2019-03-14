@@ -143,13 +143,7 @@ export const asyncRouterMap = [{
     component: _import('process/version/index'),
     // name: '历史版本查看', 
     authority: 'versionManager'
-  }
-  // ,{
-  //   path: 'uploadManager',
-  //   component: _import('process/version/index'),
-  //   // name: '历史版本查看', 
-  //   authority: 'uploadManager'
-  // } 
+  } 
 ]
 }
 

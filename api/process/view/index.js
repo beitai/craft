@@ -10,8 +10,9 @@ export function page(query) {
 
 export function query(query) {
   return fetch({
-    url: '/api/product/process/u9Conding/'+query,
+    url: '/api/product/process/u9Conding',
     method: 'get', 
+    params: query
   });
 }
 
@@ -23,10 +24,18 @@ export function getObj(id) {
   })
 } 
 
-// 删除上传图片
-export function deluploadObj(id,processId,type) {
+// 删除上传图片 
+export function deluploadObj(processId,type) {
   return fetch({
-    url: '/api/product/process/photo/'+ id+'/'+processId+'/'+type,
+    url: '/api/product/process/photo/'+processId+'/'+type,
     method: 'delete', 
+  })
+}
+
+// 查出图片
+export function pic(id) {
+  return fetch({
+    url: '/api/product/process/photo/'+id,
+    method: 'get'
   })
 }

@@ -17,7 +17,15 @@ export function getObj(id) {
 
 export function query(query) {
   return fetch({
-    url: '/api/product/process/u9Conding/'+query,
+    url: '/api/product/process/u9Conding',
     method: 'get', 
+    params: query
   });
+}
+
+export function pic(id) {
+  return fetch({
+    url: '/api/product/process/photo/'+id,
+    method: 'get'
+  })
 }

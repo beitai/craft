@@ -8,10 +8,33 @@ export function page(query) {
   });
 }
 
-export function query(query) {
+// export function query(query) {
+//   return fetch({
+//     url: '/api/product/process/u9Conding/'+query,
+//     method: 'get', 
+//   });
+// }
+export function query(u9listQuery) {
   return fetch({
-    url: '/api/product/process/u9Conding/'+query,
+    url: '/api/product/process/u9Conding',
     method: 'get', 
+    params: u9listQuery
+  });
+}
+
+// u9编码的 
+// export function queryAdd(query) {
+//   return fetch({
+//     url: '/api/product/process/saveU9Conding/'+query,
+//     method: 'get', 
+//   });
+// }
+
+export function u9query(u9listQuery) {
+  return fetch({
+    url: '/api/product/process/saveU9Coding',
+    method: 'get', 
+    params: u9listQuery
   });
 }
 
@@ -26,6 +49,14 @@ export function addObj(obj) {
 export function saveQuery() {
   return fetch({
     url: '/api/product/process/saveU9Conding',
+    method: 'get', 
+  });
+}
+
+//  查出其他的4个资料
+export function selectViewForU9Conding(query) {
+  return fetch({
+    url: '/api/product/process/selectViewForU9Conding/'+query,
     method: 'get', 
   });
 }
@@ -116,9 +147,9 @@ export function downloadObj() {
 // }
 
 // 删除上传图片
-export function deluploadObj(id,processId,type) {
+export function deluploadObj(processId,type) {
   return fetch({
-    url: '/api/product/process/photo/'+ id+'/'+processId+'/'+type,
+    url: '/api/product/process/photo/'+processId+'/'+type,
     method: 'delete', 
   })
 }
@@ -126,8 +157,15 @@ export function deluploadObj(id,processId,type) {
 // 版本历史
 export function getVersion(query) {
   return fetch({
-    url: ' /api/product/process/historyVersion/page',
+    url: '/api/product/process/historyVersion/page',
     method: 'get',
     params: query
+  })
+}
+
+export function pic(id) {
+  return fetch({
+    url: '/api/product/process/photo/'+id,
+    method: 'get'
   })
 }

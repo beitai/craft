@@ -3,14 +3,12 @@
   <div class="filter-container">
 
     <template  v-if="Status!='info'"> 
-       <el-select v-model="listQuery.u9Coding"  clearable filterable  remote :remote-method="selevtValue"  placeholder="U9产品编码" style="width: 200px;" class="filter-item"> 
-              <el-option
-                v-for="item in Items"
-                :key="item.u9Coding"
-                :label="item.u9Coding+'('+item.productModel+')'"
-                :value="item.u9Coding">
-              </el-option>
-      </el-select> 
+      <el-autocomplete class="filter-item" style="width: 200px;"
+              v-model="listQuery.u9Coding" 
+              :fetch-suggestions="selectValue"
+              placeholder="U9产品编码"
+              @select="handleSelect"> 
+        </el-autocomplete>  
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="客户" v-model="listQuery.customer"> </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="版本" v-model="listQuery.version"> </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
@@ -46,7 +44,7 @@
    <el-button v-if="Status=='info'" class="filter-item list"  type="primary"  @click="handleFilter">返回列表</el-button>
     <el-tabs v-model="activeName" :model="form" v-if="Status=='info'"> 
       <el-tab-pane  label="工艺信息" name="first">  
-          <el-form   :rules="rules" ref="form" label-width="100px"  :inline="true" class="info">
+        <el-form   :rules="rules" ref="form" label-width="100px"  :inline="true" class="info">
 
            <el-row> 
               <el-form-item  label="U9产品编号" >
@@ -85,10 +83,10 @@
             </el-row> 
             
             <el-row> 
-            <el-form-item label="移印" prop="region" >
+            <el-form-item label="移印/喷印" prop="region" >
                   <span v-html="form.moveSeal"></span>      
             </el-form-item> 
-            <el-form-item label="汽泡袋" prop="region" >
+            <el-form-item label="包装袋" prop="region" >
                   <span v-html="form.bubbleWith"></span>       
             </el-form-item> 
             <el-form-item label="产品POF过塑" prop="region" >
@@ -123,6 +121,21 @@
               </el-form-item>
             </el-row> 
             
+            <el-row class="min_span">  
+              <el-form-item label="盒标签3" >
+                  <span v-html="form.box3Label"></span>  
+              </el-form-item>
+              <el-form-item label="数量" >
+                  <span v-html="form.box3Num"></span>   
+              </el-form-item>
+              <el-form-item label="盒标签4" >
+                  <span v-html="form.box4Label"></span>    
+              </el-form-item>
+              <el-form-item label="数量" >
+                  <span v-html="form.box4Num"></span>    
+              </el-form-item>
+            </el-row> 
+
             <el-row class="min_span">  
               <el-form-item label="箱标签1" >
                   <span v-html="form.case1Label"></span>   
@@ -163,8 +176,7 @@
             </el-row>  
             
             <el-row class="max_list">
-            <el-form-item label="面料/底料" >
-                <!-- <span class="maxspan" v-html="form.shellFabric+'/'+form.bedCharge"></span>   -->
+            <el-form-item label="配方" > 
                 <span class="maxspan" v-html="form.bedCharge"></span>  
             </el-form-item>
             </el-row>  
@@ -178,29 +190,53 @@
             </el-form-item>
             </el-row>  
             
-             <el-row>
+              <el-row>
               <el-form-item label="子件料号" >
-                   <el-input type="textarea" class="maxspan" v-model="form.childThingNumber" readonly></el-input>
+                  <span class="maxspan" v-html="form.childThingNumber"></span>    
               </el-form-item>
             </el-row>  
             
+            <el-row >
+              <el-form-item label="隔板" >  
+                  <span class="maxspan" v-html="form.clapboard"></span>  
+              </el-form-item>
+            </el-row>
+
             <el-row>
               <el-form-item label="备注" > 
-                   <el-input type="textarea" class="maxspan" v-model="form.remark" readonly></el-input>
+                  <span class="maxspan" v-html="form.remark"></span>   
               </el-form-item>
-            </el-row> 
+            </el-row>
             
+            <el-row class="max_span"> 
+                <el-form-item label="创建人" >
+                    <span v-html="form.crtName"></span>   
+                </el-form-item> 
+                <el-form-item label="创建时间" >
+                    <span v-html="form.crtTime"></span>  
+                </el-form-item>
+            </el-row>  
+
+            <el-row class="max_span"> 
+                <el-form-item label="最后更新人" >
+                    <span v-html="form.updName"></span>   
+                </el-form-item> 
+                <el-form-item label="最后更新时间" >
+                    <span v-html="form.updTime"></span>  
+              </el-form-item> 
+            </el-row> 
+
               <el-row> 
-                 <el-col :span="12">  
+                 <el-col :span="12">   
                     <el-form-item label="打商标" >  
-                      <a :href="form.process1PictureName_src" target="_blank">
+                      <a :href="form.process1PictureHref" target="_blank">
                         <img :src="form.process1PictureName_src">
                       </a>
                     </el-form-item> 
                 </el-col>  
                  <el-col :span="12">  
                     <el-form-item label="衬片钻小孔" > 
-                      <a :href="form.process2PictureName_src" target="_blank">
+                      <a :href="form.process2PictureHref" target="_blank">
                         <img :src="form.process2PictureName_src"> 
                       </a>
                     </el-form-item> 
@@ -209,14 +245,14 @@
              <el-row> 
                  <el-col :span="12">  
                     <el-form-item label="移印喷码" > 
-                      <a :href="form.process3PictureName_src" target="_blank">
+                      <a :href="form.process3PictureHref" target="_blank">
                         <img :src="form.process3PictureName_src"> 
                        </a>
                     </el-form-item> 
                 </el-col>  
                  <el-col :span="12">  
                     <el-form-item label="包装" > 
-                      <a :href="form.process4PictureName_src" target="_blank">
+                      <a :href="form.process4PictureHref" target="_blank">
                         <img :src="form.process4PictureName_src">  
                       </a>
                     </el-form-item> 
@@ -239,7 +275,8 @@ import {
   getObj,
   delObj,
   putObj,
-  query
+  query,
+  pic
 } from 'api/process/version/index';
 import defaultImg from 'assets/images/defaultImg.png';
 import { mapGetters } from 'vuex';
@@ -312,20 +349,26 @@ export default {
         limit: 10,
         u9Coding: ''
       },
+      u9listQuery: {
+        u9Coding: "",
+        page: 1,
+        limit: 30 
+      },
       dialogFormVisible: false,
       Status: '',
       textMap: {
         update: '编辑',
         create: '创建'
       },
-      tableKey: 0
+      tableKey: 0,
+      dialogStatus:""
     }
   },
   created() {
     this.getList();
 
     // 获取配置里面的公共api 用来做图片的显示。 
-    this.baseUrl = process.env.BASE_API;    
+    this.baseUrl = ApiUrl;    
   },
   computed: {
     ...mapGetters([
@@ -340,42 +383,35 @@ export default {
         this.listQuery.version = undefined;
       }
       page(this.listQuery)
-        .then(response => {
-          // console.log(response);
+        .then(response => { 
           this.list = response.data.rows;
           this.total = response.data.total;
           this.listLoading = false;
         })
     },
     info(row) {
-      this.Status = 'info';
-      getObj(row.id)
-        .then(response => {
-          // console.log(response);
-          this.form = response.data;
-
-          if(this.form.process1PictureId ==  "" || this.form.process1PictureId == null){
-              this.form.process1PictureName_src = defaultImg
-            }else{
-              this.form.process1PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/1/'+this.form.version+"/"+this.form.process1PictureId; 
+      this.Status = "info";
+      getObj(row.id).then(response => {
+        this.form = response.data; 
+        // 赋值4个路径进去.
+        for (var i = 1; i < 5; i++) { 
+          this.form['process'+i+'PictureHref'] = this.baseUrl + "/api/product/process/photo/" + this.form.id + "/"+i;
+        }
+        // http请求图片地址，返回base图片结果，赋值在src上。
+          pic(row.id).then(response => {
+            this.form.process1PictureName_src = response.tupian1;
+            this.form.process2PictureName_src = response.tupian2;
+            this.form.process3PictureName_src = response.tupian3;
+            this.form.process4PictureName_src = response.tupian4; 
+            if(this.form.remark == null){
+              this.form.remark = ' ';
+            }else{ 
+              this.form.remark =this.form.remark+' ';
             }
-            if(this.form.process2PictureId ==  "" || this.form.process2PictureId == null){
-              this.form.process2PictureName_src = defaultImg
-            }else{
-              this.form.process2PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/2/'+this.form.version+"/"+this.form.process2PictureId; 
-            }
-            if(this.form.process3PictureId ==  "" || this.form.process3PictureId == null){
-              this.form.process3PictureName_src = defaultImg
-            }else{
-            this.form.process3PictureName_src =  this.baseUrl+'/api/product/process/photo/'+this.form.id+'/3/'+this.form.version+"/"+this.form.process3PictureId; 
-            }
-            if(this.form.process4PictureId ==  "" || this.form.process4PictureId == null){
-              this.form.process4PictureName_src = defaultImg
-            }else{              
-            this.form.process4PictureName_src = this.baseUrl+'/api/product/process/photo/'+this.form.id+'/4/'+this.form.version+"/"+this.form.process4PictureId;
-            }    
-        })
-    },
+          });
+       
+      });
+    }, 
     handleFilter() {
       this.getList();
     },
@@ -399,12 +435,34 @@ export default {
     handleSelectionChange(val) {
         this.multipleSelection = val;
     },
-    selevtValue(value){ 
-      if(value != ''){ 
-       query(value).then(response => {  
-          this.Items = response.data.dataList; 
-        });
-      } 
+    // selectValue(value){ 
+    //     this.Items = [];
+    //     this.u9listQuery.page = 1;  //重置页数
+    //     this.u9listQuery.u9Coding = value; 
+    //     query(this.u9listQuery).then(response => {
+    //       this.Items = response.data.rows;
+    //     }); 
+    // }, 
+    // selectValue0() {
+    //   this.u9listQuery.page++; 
+    //   query(this.u9listQuery).then(response => {
+    //     this.Items = this.Items.concat(response.data.rows); 
+    //   });
+    // }
+    selectValue(queryString, cb) {
+      this.u9listQuery.page = 1; //重置页数
+      this.u9listQuery.u9Coding = queryString;
+      query(this.u9listQuery).then(response => {
+        var data = response.data.rows;
+        for (var i = 0; i < data.length; i++) {
+          data[i].value = data[i].u9Coding + "(" + data[i].productModel + ")";
+        } 
+        cb(data);
+      });
+    },
+    // 选中重新赋值
+    handleSelect(item) { 
+      this.listQuery.u9Coding = item.u9Coding;
     }
   }
 }

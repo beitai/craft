@@ -165,7 +165,7 @@ export default {
           }
         }
       }else{
-       console.log("这个是三级菜单");
+      //  console.log("这个是三级菜单");
         //  当里面没的时候进行添加。并且选择第三层时进行第二层添加。 
         // console.log(row); 
         if(this.result.indexOf(row.parentId) == '-1'){

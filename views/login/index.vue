@@ -10,10 +10,14 @@
       <span class="svg-container"><icon-svg icon-class="mima"></icon-svg></span>
       <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="密码"></el-input>
     </el-form-item>
-     <el-form-item prop="code">
+     <el-form-item prop="picLyanzhengma">
       <span class="svg-container"><icon-svg icon-class="mima"></icon-svg></span>
-      <el-input name="code" type="text" @keyup.enter.native="handleLogin"  v-model="loginForm.code"   autoComplete="on" placeholder="验证码" style="width:200px;"></el-input>
-      <img class="yzm" :src="loginForm.yzm" @click="yzmRefresh"> 
+      <!-- <el-input name="code" type="text" @keyup.enter.native="handleLogin"  v-model="loginForm.code"   autoComplete="on" placeholder="验证码" style="width:200px;"></el-input>
+      <img class="yzm" :src="yzm" @click="yzmRefresh">  -->
+      <!-- @blur="checkLpicma" -->
+      <el-input  type="text" placeholder="验证码" style="width:200px;"   v-model="loginForm.picLyanzhengma"></el-input>
+      <input class="yzm" type="button"  @click="createCode"  v-model="checkCode" />
+      {{this.picLyanzhengma}}   
     </el-form-item>
     <el-form-item>
       <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
@@ -33,9 +37,9 @@
 <script>
 import socialSign from './socialsignin'; 
 export default {
-  components: {
-    socialSign, 
-  },
+  // components: {
+  //   socialSign, 
+  // },
   name: 'login',
   data() {
     const validatePass = (rule, value, callback) => {
@@ -45,13 +49,27 @@ export default {
         callback();
       }
     };
+     const validateyzm = (rule, value, callback) => {  
+       value =   value.toUpperCase();
+       if (value.length == 0) {
+        callback(new Error('验证码不能为空'));
+       } else if (value != this.checkCode) {
+          callback(new Error('验证码错误'));
+       } else {
+          callback();
+       }
+      //  console.log(value);
+      //  console.log(this.checkCode);
+      }; 
     return {
       loginForm: {
         username: '',
         password: '',
-        code: '',
-        yzm:'', 
+        picLyanzhengma: ''
       },
+      picLyanzhengma:'',
+      checkCode:'',
+      yzm:'',
       loginRules: {
         username: [{
           required: true,
@@ -69,20 +87,50 @@ export default {
           trigger: 'blur',
           validator: validatePass
         }],
-         code: [{
+        picLyanzhengma: [{
+          // required: true,
+          // message: '验证码不能为空',
+          // trigger: 'blur'
           required: true,
-          message: '验证码不能为空',
-          trigger: 'blur'
+          trigger: 'blur',
+          validator: validateyzm
         }],
       },
       loading: false,
       showDialog: false
     }
+  },created() {
+    // window.addEventListener('hashchange', this.afterQRScan);  
+
+    // 获取配置里面的公共api 用来做图片的显示。 
+    // this.baseUrl = process.env.BASE_API;       
+    // this.baseUrl = ApiUrl;
+    // this.yzm = this.baseUrl+'/api/auth/jwt/getcode';
+    // apiUrl 是全局定义的 ip和端口 路径。在index.html引用然后可以在任何地方使用
+    // console.log('測試 測試');
+    // console.log(ApiUrl);
+
+    this.createCode();
   }, 
   methods: { 
-    yzmRefresh() { 
-      this.loginForm.yzm  = this.baseUrl+'/api/auth/jwt/getcode?t='+new Date().getTime();
-    },
+    // 图片验证码
+    createCode(){
+      var code = ""; 
+      var codeLength = 4;//验证码的长度 
+      var random = new Array(0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R', 
+         'S','T','U','V','W','X','Y','Z');
+      for(var i = 0; i < codeLength; i++) {
+       var index = Math.floor(Math.random()*36);//取得随机数的索引（0~35） 
+       code += random[index];//根据索引取得随机数加到code上 
+      } 
+      this.checkCode = code;//把code值赋给验证码 
+    }, 
+    // checkLpicma(){   
+    //   this.checkCode.toUpperCase();
+    // },
+    // yzmRefresh() {  
+    //   this.yzm  = this.baseUrl+'/api/auth/jwt/getcode?t='+new Date().getTime(); 
+    // },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -149,14 +197,6 @@ export default {
       //   });
       // }
     }
-  },
-  created() {
-    // window.addEventListener('hashchange', this.afterQRScan);  
-    
-    // 获取配置里面的公共api 用来做图片的显示。 
-    this.baseUrl = process.env.YZM_API;   
-    // 初始化验证码
-    this.loginForm.yzm = this.baseUrl+'/api/auth/jwt/getcode'; 
   },
   destroyed() {
     // window.removeEventListener('hashchange', this.afterQRScan);
@@ -228,6 +268,13 @@ export default {
       position:absolute;
       top:4px;
       right:4px;
+      width: 100px;
+      height: 40px;
+      background: #f2f2f5;
+      color: #053d87;
+      font-size: 18px;
+      letter-spacing: 5px;
+      outline:none;
     }
 }
 </style>

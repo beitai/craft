@@ -104,7 +104,8 @@ const user = {
         getInfo(state.token).then(response => {
           // console.log('用户测试');
           // console.log(response);
-          commit('SET_AVATAR', 'http://123.56.2.28:8011');
+          // 图片设置， 暂时没用到
+          commit('SET_AVATAR', '');
           const data = response;
           commit('SET_ROLES', 'admin');
           commit('SET_NAME', data.name);
